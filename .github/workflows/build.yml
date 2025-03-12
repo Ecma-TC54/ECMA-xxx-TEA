@@ -41,3 +41,15 @@ jobs:
         with:
           name: documentation-snapshot
           path: ./out
+
+      - name: Clean "out" Directory
+        run: npm run clean
+
+      - name: Build PDF
+        run: npm run pdf
+
+      - name: Archive PDF Snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-snapshot
+          path: ./out/spec.pdf
