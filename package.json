@@ -10,7 +10,7 @@
     "build-only": "ecmarkup --verbose spec.html --multipage out",
     "build": "npm run build-head",
     "build-for-pdf": "ecmarkup --verbose spec.html --printable --assets external out/index.html",
-    "pdf": "npm run build-for-pdf && pagedjs-cli --page-size a4 out/index.html -o out/spec.pdf",
+    "pdf": "npm run build-for-pdf",
     "prebuild-snapshot": "npm run clean",
     "build-snapshot": "npm run build-head && node scripts/insert_snapshot_warning.js",
     "clean": "rm -rf out",
