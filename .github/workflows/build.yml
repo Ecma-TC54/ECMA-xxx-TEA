@@ -33,6 +33,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Download PrinceXML
+        run: |
+          # Use your GITHUB_TOKEN to authorize downloading from the private repo
+          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://github.com/Ecma-TC54/princexml/raw/refs/heads/main/prince_15.4.1-1_ubuntu24.04_amd64.deb
+
+      - name: Install PrinceXML
+        run: |
+          sudo dpkg -i prince_15.4.1-1_ubuntu24.04_amd64.deb || true
+          # Fix any missing dependencies
+          sudo apt-get update
+          sudo apt-get -f install -y
+
       - name: Build Project
         run: npm run build-head
 
@@ -48,8 +61,11 @@ jobs:
       - name: Build PDF
         run: npm run build-for-pdf
 
-      #- name: Archive PDF Snapshot
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: pdf-snapshot
-      #    path: ./out/spec.pdf
+      - name: Generate PDF
+        run: prince-books --script ./node_modules/ecmarkup/js/print.js out/index.html -o out/spec.pdf
+
+      - name: Archive PDF Snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-snapshot
+          path: ./out/spec.pdf
