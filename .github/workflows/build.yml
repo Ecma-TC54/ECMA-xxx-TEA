@@ -35,9 +35,7 @@ jobs:
 
       - name: Download PrinceXML
         run: |
-          # Use your GITHUB_TOKEN to authorize downloading from the private repo
-          wget --header="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://github.com/Ecma-TC54/princexml/raw/refs/heads/main/prince_15.4.1-1_ubuntu24.04_amd64.deb
+          wget https://www.princexml.com/download/prince_15.4.1-1_ubuntu24.04_amd64.deb
 
       - name: Install PrinceXML
         run: |
