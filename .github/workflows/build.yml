@@ -39,10 +39,9 @@ jobs:
 
       - name: Install PrinceXML
         run: |
-          sudo dpkg -i prince_15.4.1-1_ubuntu24.04_amd64.deb || true
-          # Fix any missing dependencies
           sudo apt-get update
-          sudo apt-get -f install -y
+          sudo apt-get install -y gdebi-core
+          sudo gdebi -n prince_15.4.1-1_ubuntu24.04_amd64.deb
 
       - name: Build Project
         run: npm run build-head
