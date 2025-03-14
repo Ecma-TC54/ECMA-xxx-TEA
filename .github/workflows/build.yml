@@ -59,8 +59,7 @@ jobs:
         run: |
           docker pull ghcr.io/ecma-tc54/princexml:main
           docker run --rm \
-            -v "${{ github.workspace }}/out:/work" \
-            -e LICENSE_FILE="${{ secrets.PRINCE_LICENSE }}" \
+            -v "${{ github.workspace }}/out":/work \
             ghcr.io/ecma-tc54/princexml:main \
             --script /usr/local/lib/node_modules/ecmarkup/js/print.js /work/index.html -o /work/spec.pdf
 
