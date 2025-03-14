@@ -33,16 +33,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Download PrinceXML
-        run: |
-          wget https://www.princexml.com/download/prince_15.4.1-1_ubuntu24.04_amd64.deb
-
-      - name: Install PrinceXML
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gdebi-core
-          sudo gdebi -n prince_15.4.1-1_ubuntu24.04_amd64.deb
-
       - name: Build Project
         run: npm run build-head
 
@@ -56,10 +46,16 @@ jobs:
         run: npm run clean
 
       - name: Build PDF
-        run: npm run build-for-pdf
+        run: npm run pdf
 
-      - name: Generate PDF
-        run: prince-books --script ./node_modules/ecmarkup/js/print.js out/index.html -o out/spec.pdf
+      - name: Pull and Run PrinceXML Container
+        run: |
+          docker pull ghcr.io/ecma-tc54/princexml:main
+          docker run --rm \
+            -v "${{ github.workspace }}/out:/work" \
+            -e LICENSE_FILE="${{ secrets.PRINCE_LICENSE }}" \
+            ghcr.io/ecma-tc54/princexml:main \
+            --script /usr/local/lib/node_modules/ecmarkup/js/print.js /work/index.html -o /work/spec.pdf
 
       - name: Archive PDF Snapshot
         uses: actions/upload-artifact@v4
