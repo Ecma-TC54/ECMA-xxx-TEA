@@ -24,7 +24,7 @@
   "homepage": "https://tc54.org/tea/",
   "devDependencies": {
     "ecmarkup": "22.0.0",
-    "glob": "^7.1.6",
+    "glob": "^13.0.6",
     "jsdom": "^27.2.0",
     "pagedjs": "^0.4.3",
     "pagedjs-cli": "^0.4.3",
