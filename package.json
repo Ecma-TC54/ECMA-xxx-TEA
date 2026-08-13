@@ -23,7 +23,7 @@
   "author": "ECMA TC54",
   "homepage": "https://tc54.org/tea/",
   "devDependencies": {
-    "ecmarkup": "22.0.0",
+    "ecmarkup": "25.0.0",
     "glob": "^7.1.6",
     "jsdom": "^27.2.0",
     "pagedjs": "^0.4.3",
