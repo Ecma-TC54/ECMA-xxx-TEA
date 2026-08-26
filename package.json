@@ -25,7 +25,7 @@
   "devDependencies": {
     "ecmarkup": "22.0.0",
     "glob": "^7.1.6",
-    "jsdom": "^27.2.0",
+    "jsdom": "^30.0.1",
     "pagedjs": "^0.4.3",
     "pagedjs-cli": "^0.4.3",
     "tar-stream": "^2.2.0",
