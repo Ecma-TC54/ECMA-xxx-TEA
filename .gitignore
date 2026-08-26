@@ -4,6 +4,9 @@ vendor/esmeta
 test*.js
 aspell.txt
 
+# Fetched TEA source repository (populated by `npm run generate-spec`)
+tea-source/
+
 # lockfiles we don't use are ignored
 npm-shrinkwrap.json
 yarn.lock
