@@ -12,7 +12,7 @@ permissions:
 jobs:
   install:
     name: 'Install Dependencies'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -35,7 +35,7 @@ jobs:
 
   build-docs:
     name: 'Build Documentation'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: install
     steps:
       - name: Checkout Code
@@ -64,7 +64,7 @@ jobs:
 
   deploy-docs:
     name: 'Deploy Documentation'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: build-docs
     if: github.ref == 'refs/heads/main'
     permissions:
@@ -89,7 +89,7 @@ jobs:
 
   build-for-pdf:
     name: 'Build Documentation for PDF'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: install
     steps:
       - name: Checkout Code
@@ -117,7 +117,7 @@ jobs:
 
   publish-pdf:
     name: 'Publish PDF'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: build-for-pdf
     steps:
       - name: Restore PDF Output
