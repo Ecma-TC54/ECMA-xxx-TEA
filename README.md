@@ -7,6 +7,9 @@ hardware and system transparency artefacts — such as Bills of Materials (xBOMs
 attestations, and vulnerability disclosure documents — between publishers and
 consumers.
 
+NOTE: Temporarily modified to only publish normative text for TC54
+See NARRATIVE_DOCS vs FULL_NARRATIVE_DOCS in index.js
+
 ### Important Note on Repository Name
 
 This repository is named `ECMA-xxx-TEA` as a placeholder. Upon ratification of

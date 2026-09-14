@@ -36,7 +36,15 @@ const TEA_README = "README.md";
 // Narrative chapters, in the order they should appear in the spec.
 // Each entry is [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs
 // so unrelated chapters can use the same heading text without collision.
+//
+// The normative docs
 const NARRATIVE_DOCS = [
+  ["discovery/readme.md", "discovery"],
+  ["auth/readme.md", "auth"],
+];
+
+// Full documenation
+const FULL_NARRATIVE_DOCS = [
   ["doc/tea-requirements.md", "req"],
   ["doc/tea-usecases.md", "uc"],
   ["discovery/readme.md", "discovery"],
