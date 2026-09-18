@@ -126,9 +126,22 @@ preserving named-schema identity) and emits two top-level clauses:
      under a stable ID `#sec-tea-op-<operationId>`;
    - the HTTP method and path;
    - the operation `description`;
-   - a **Parameters** table — name, location (`in`), required, type, description;
-   - the **request body** — media type and schema;
-   - a **Responses** table — status code, description, response schema.
+   - the operation's **security** requirement, when it overrides the
+     document default;
+   - a **Parameters** table — name, location (`in`), required, type,
+     description (plus enum values, default and bounds where declared);
+   - the **request body** — description, media type and schema;
+   - a **Responses** table — status code, description, response schema;
+   - a **Response headers** table — status, header name, type, description
+     (only for operations that declare response headers).
+
+   `$ref`s to reusable `components.parameters`, `components.responses`,
+   `components.headers` and `components.requestBodies` are resolved so the
+   shared definition is rendered in place of the reference.
+
+   If `components.securitySchemes` or a document-level `security` requirement
+   is present, a **Security** subclause (`#sec-tea-api-security`) is emitted
+   first, listing the schemes and the default requirement.
 
    If `info.description` is present and not the placeholder `TBC`, it is
    rendered as the section's lead paragraph. Operations with no tag are
@@ -137,15 +150,16 @@ preserving named-schema identity) and emits two top-level clauses:
 2. **Data model** (`#sec-tea-data-model`). One subclause per entry in
    `components.schemas`, ID `#sec-tea-schema-<name>`, rendering: the schema
    `description`, `type`, `format`, `pattern`, an **enum** table (if any), a
-   **Properties** table (property, type, Required/Optional, description), and
-   any `examples`/`example`. Property and parameter types that reference
-   another schema are linked to that schema's clause, so the data model is
-   cross-referenced.
+   **Properties** table (property, type, Required/Optional, description with
+   any enum values, default, bounds and format), and any `examples`/`example`.
+   Property and parameter types that reference another schema are linked to
+   that schema's clause, so the data model is cross-referenced.
 
-> Note: `oneOf` / `anyOf` / `allOf` are currently surfaced as the type name
-> only; the variants are not yet recursed into. The build also expects internal
-> (`#/components/...`) refs only — there are no external `$ref`s in the current
-> document.
+> Note: `allOf` is flattened — named members are listed as "Includes all
+> properties of …" links and inline members contribute rows to the Properties
+> table. `oneOf` / `anyOf` variants are listed as links but not merged. The
+> build also expects internal (`#/components/...`) refs only — there are no
+> external `$ref`s in the current document.
 
 ### `README.md` — Introduction only
 
