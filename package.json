@@ -12,7 +12,7 @@
     "prebuild-only": "npm run clean && mkdir out && cp -R img out",
     "build-only": "ecmarkup --verbose spec.html --multipage out",
     "build": "npm run build-head",
-    "build-for-pdf": "npm run generate-spec && npm run prebuild-only && ecmarkup --verbose spec.html --printable --assets external out/index.html",
+    "build-for-pdf": "npm run generate-spec && npm run prebuild-only && ecmarkup --verbose spec.html --printable --assets external --no-minify out/index.html",
     "pdf": "npm run build-for-pdf",
     "prebuild-snapshot": "npm run clean",
     "build-snapshot": "npm run build-head && node scripts/insert_snapshot_warning.js",
