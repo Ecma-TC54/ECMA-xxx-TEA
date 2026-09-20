@@ -33,6 +33,7 @@
     "markdown-it-anchor": "^9.2.0"
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.17.0",
     "ecmarkup": "25.0.0",
     "glob": "^13.0.6",
     "jsdom": "^30.0.1",
