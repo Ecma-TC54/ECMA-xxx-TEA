@@ -102,8 +102,18 @@ const NARRATIVE_DOCS = [
 - **Conversion.** `lib/md-to-emu.js` maps Markdown headings (`#`…`######`) to
   nested clauses, strips the leading table-of-contents bullet list that some
   documents carry (Ecmarkup builds its own TOC), and drops code-fence language
-  hints that the bundled highlighter can't parse (e.g. `mermaid`, `abnf`,
-  `http`).
+  hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
+- **Mermaid diagrams are pre-rendered.** Each ```` ```mermaid ```` fence is
+  rendered to inline SVG at generate time by `lib/mermaid.js` (using
+  `@mermaid-js/mermaid-cli` and a headless Chrome through puppeteer) and
+  emitted as an `<emu-figure id="fig-<idPrefix>-<n>">`, with the diagram's
+  front-matter `title` as its caption and the source kept in an HTML comment
+  next to it. Static SVG is what both ecmarkup and PrinceXML can print;
+  client-side Mermaid would not survive the PDF step. The renderer uses the
+  `neutral` theme and disables HTML labels, so no `<foreignObject>` is
+  produced. Set `PUPPETEER_EXECUTABLE_PATH` to reuse an installed Chrome (CI
+  does this with the runner's `/usr/bin/google-chrome`); otherwise puppeteer
+  uses the browser it downloaded at `npm ci` time.
 - **Missing files degrade gracefully.** If a path 404s, the build logs a
   warning and skips it rather than failing — so an upstream rename won't break
   CI, but the affected chapter silently disappears until the list is updated.
@@ -170,8 +180,10 @@ README is ignored.
 ## Building locally
 
 ```bash
-npm ci                 # install (PUPPETEER_SKIP_DOWNLOAD=true is fine)
-npm run generate-spec  # fetch TEA sources -> spec.html
+npm ci                 # install; downloads a Chrome for the Mermaid renderer
+                       # (set PUPPETEER_SKIP_DOWNLOAD=true and PUPPETEER_EXECUTABLE_PATH
+                       # to reuse an installed Chrome/Chromium instead)
+npm run generate-spec  # fetch TEA sources, render diagrams -> spec.html
 npm run build          # spec.html -> out/ (single + multipage HTML, lint-spec)
 npm run build-for-pdf  # spec.html -> out/index.html with external assets (PDF input)
 ```

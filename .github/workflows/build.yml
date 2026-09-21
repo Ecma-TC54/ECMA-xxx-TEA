@@ -55,6 +55,10 @@ jobs:
 
       - name: Build Project
         run: npm run build
+        env:
+          # Mermaid diagrams are rendered with puppeteer at generate time;
+          # use the Chrome that ships on the runner instead of downloading one.
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
 
       - name: Archive "out" Directory
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
@@ -108,6 +112,8 @@ jobs:
 
       - name: Build for PDF
         run: npm run build-for-pdf
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
 
       - name: Archive PDF Output Directory
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0

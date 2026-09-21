@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import beautify from "js-beautify";
 import MarkdownIt from "markdown-it";
 import { markdownToEmuClauses } from "./lib/md-to-emu.js";
+import { closeMermaidRenderer } from "./lib/mermaid.js";
 import { openApiToEmu } from "./lib/openapi-to-emu.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -108,9 +109,10 @@ async function build() {
       continue;
     }
     html += `<!-- imported from ${TEA_SOURCE_REPO}@${TEA_SOURCE_REF}:${rel} -->\n`;
-    html += markdownToEmuClauses(body, idPrefix);
+    html += await markdownToEmuClauses(body, idPrefix);
   }
   html += "</emu-clause>\n";
+  await closeMermaidRenderer();
 
   // Generated API surface + data model follow the narrative.
   const openapiYaml = await fetchTeaFile(TEA_OPENAPI);
@@ -122,7 +124,7 @@ async function build() {
 
   // js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-
   // printing and restore afterwards.
-  const TAGS_TO_SKIP = ["pre", "code", "script"];
+  const TAGS_TO_SKIP = ["pre", "code", "script", "svg"];
   const placeholders = {};
   let counter = 0;
   let working = html;
@@ -147,7 +149,8 @@ async function build() {
   console.log(`wrote ${OUT_FILE} (${pretty.length} bytes)`);
 }
 
-build().catch(err => {
+build().catch(async err => {
   console.error(err);
+  await closeMermaidRenderer().catch(() => {});
   process.exit(1);
 });
