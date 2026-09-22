@@ -86,7 +86,6 @@ const NARRATIVE_DOCS = [
   ["tea-component/tea-release.md", "tea-release"],
   ["tea-collection/tea-collection.md", "tea-collection"],
   ["tea-artifact/tea-artifact.md", "tea-artifact"],
-  ["signatures/signature.md", "signatures"],
 ];
 ```
 
