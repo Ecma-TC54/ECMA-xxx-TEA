@@ -169,7 +169,7 @@
     </emu-clause>
     <emu-clause id="sec-terms-and-definitions-collection">
       <h1>Collection</h1>
-      <p>versioned set of TEA Artefacts associated with a specific TEA Release</p>
+      <p>versioned set of TEA Artifacts associated with a specific TEA Release</p>
     </emu-clause>
     <emu-clause id="sec-terms-and-definitions-product">
       <h1>Product</h1>
@@ -180,7 +180,7 @@
       <p>specific version of a Product that can be acquired or downloaded</p>
     </emu-clause>
     <emu-clause id="sec-terms-and-definitions-tea-artefact">
-      <h1>TEA Artefact</h1>
+      <h1>TEA Artifact</h1>
       <p>named file (e.g. an SBOM, an attestation, a VEX document) referenced by a Collection</p>
     </emu-clause>
   </emu-clause>
@@ -188,8 +188,8 @@
     <h1>Acronyms and abbreviations</h1>
     <p>For the purposes of this Standard, the following abbreviations apply:</p>
     <emu-table>
+      <emu-caption>Acronyms & abbreviations</emu-caption>
       <table>
-        <caption>Acronyms & abbreviations</caption>
         <thead>
           <tr>
             <th>Abbreviation</th>
@@ -1600,7 +1600,7 @@ sequenceDiagram
       <p>The TEA Collection object has the following parts:</p>
       <ul>
         <li>Preamble</li>
-        <li><strong>uuid</strong>: UUID of the TEA Collection object. This matches the UUID of the associated TEA Component Release object. When updating a collection, only the <code>version</code> is changed.</li>
+        <li><strong>uuid</strong>: UUID of the TEA Collection object. A TEA Collection shall use the same UUID as its parent Product Release or Component Release. Within an authoritative domain, a Product Release and a Component Release shall not share a UUID. Consequently, Collections belonging to different parent releases have different UUIDs. Versions of the same Collection retain the same UUID. See <a href="../doc/tea-uuid-scope.md">TEA UUID Scope and Stability</a>. When updating a collection, only the <code>version</code> is changed.</li>
         <li><strong>version</strong>: TEA Collection version, incremented each time its content changes. Versions start with 1.</li>
         <li><strong>createdDate</strong>: Timestamp when the TEA Collection version was created.</li>
         <li><strong>belongsTo</strong>: Indicates whether this collection belongs to a Component Release or a Product Release. Enum values <code>COMPONENT_RELEASE</code> or <code>PRODUCT_RELEASE</code>.</li>
@@ -1993,107 +1993,8 @@ sequenceDiagram
   </emu-clause>
   <emu-clause id="sec-tea-api-cle">
     <h1>CLE</h1>
-    <emu-clause id="sec-tea-op-getclebyproductreleaseid">
-      <h1>getCleByProductReleaseId</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/cle</code></p>
-      <p>Get the CLE (Common Lifecycle Enumeration) data for a TEA Product Release</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>Unique UUID of TEA Product Release in the TEA server</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>CLE data for the requested TEA Product Release found and returned</td>
-              <td><a href="#sec-tea-schema-cle"><code>cle</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
-    <emu-clause id="sec-tea-op-getclebyproductid">
-      <h1>getCleByProductId</h1>
+    <emu-clause id="sec-tea-op-getproductcle">
+      <h1>Get the lifecycle events of a TEA Product</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/product/{uuid}/cle</code></p>
       <p>Get the CLE (Common Lifecycle Enumeration) data for a TEA Product</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -2191,8 +2092,107 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getclebycomponentid">
-      <h1>getCleByComponentId</h1>
+    <emu-clause id="sec-tea-op-getproductreleasecle">
+      <h1>Get the lifecycle events of a TEA Product Release</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/cle</code></p>
+      <p>Get the CLE (Common Lifecycle Enumeration) data for a TEA Product Release</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>Unique UUID of TEA Product Release in the TEA server</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>CLE data for the requested TEA Product Release found and returned</td>
+              <td><a href="#sec-tea-schema-cle"><code>cle</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-getcomponentcle">
+      <h1>Get the lifecycle events of a TEA Component</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/component/{uuid}/cle</code></p>
       <p>Get the CLE (Common Lifecycle Enumeration) data for a TEA Component</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -2290,8 +2290,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getclebycomponentreleaseid">
-      <h1>getCleByComponentReleaseId</h1>
+    <emu-clause id="sec-tea-op-getcomponentreleasecle">
+      <h1>Get the lifecycle events of a TEA Component Release</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}/cle</code></p>
       <p>Get the CLE (Common Lifecycle Enumeration) data for a TEA Component Release</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -2393,7 +2393,7 @@ sequenceDiagram
   <emu-clause id="sec-tea-api-tea-artifact">
     <h1>TEA Artifact</h1>
     <emu-clause id="sec-tea-op-getlatestartifact">
-      <h1>getLatestArtifact</h1>
+      <h1>Get the metadata of the latest TEA Artifact revision</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/latest</code></p>
       <p>Get metadata for the latest revision of a specific TEA Artifact, that is, the revision with the greatest published <code>version</code>.</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -2491,114 +2491,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getartifactbyversion">
-      <h1>getArtifactByVersion</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/{artifactVersion}</code></p>
-      <p>Get metadata for a specific revision of a specific TEA Artifact</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>UUID of TEA Artifact in the TEA server</td>
-            </tr>
-            <tr>
-              <td><code>artifactVersion</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td>integer</td>
-              <td>Version of TEA Artifact</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>Requested TEA Artifact metadata found and returned</td>
-              <td><a href="#sec-tea-schema-artifact"><code>artifact</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
     <emu-clause id="sec-tea-op-downloadlatestartifact">
-      <h1>downloadLatestArtifact</h1>
+      <h1>Download the content of the latest TEA Artifact revision</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/latest/download</code></p>
       <p>Download the content of the latest revision of a specific TEA Artifact.</p>
       <p>Equivalent to the versioned download endpoint, resolving to the revision with the greatest published <code>version</code> — the same revision <code>/artifact/{uuid}/latest</code> reports. The content this returns changes when a new revision is published, so unlike the versioned endpoint the response is not immutable: caches shall revalidate it via <code>ETag</code> for the selected representation. The <code>Content-Location</code> header is an absolute versioned URL including the API base, version path, and <code>mediaType</code> query parameter; clients that need a stable, reproducible reference use that URL.</p>
@@ -2809,8 +2703,315 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
+    <emu-clause id="sec-tea-op-downloadlatestartifactsignature">
+      <h1>Download the signature of the latest TEA Artifact revision</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/latest/signature/download</code></p>
+      <p>Download the detached signature for the latest revision of a specific TEA Artifact.</p>
+      <p>Equivalent to the versioned signature endpoint, resolving to the revision with the greatest published <code>version</code> — the same revision <code>/artifact/{uuid}/latest</code> reports. As with the latest content endpoint, the response is not immutable and caches shall revalidate it via <code>ETag</code> for the selected representation; <code>Content-Location</code> is an absolute versioned signature URL including the API base, version path, and <code>mediaType</code> query parameter.</p>
+      <p>When serving the signature itself (<code>200</code>), servers shall return a strong <code>ETag</code> for the selected representation and shall honor <code>If-None-Match</code> with <code>304</code>. <code>ETag</code> is the only conditional validator for these downloads. Servers that support <code>HEAD</code> for this operation shall return the same headers as <code>GET</code> without a response body. <code>302</code> redirects are outside conditional semantics: <code>If-None-Match</code> applies only to the TEA-hosted download response, not to following an external <code>Location</code>.</p>
+      <p><code>404</code> distinguishes the cases by TEA error body: <code>OBJECT_UNKNOWN</code> when the artifact revision is unknown (or concealed), and <code>SIGNATURE_NOT_FOUND</code> when the revision exists but the selected format has no signature published. A server concealing an artifact from a client shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, including signatures.</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>UUID of TEA Artifact in the TEA server</td>
+            </tr>
+            <tr>
+              <td><code>mediaType</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>string</td>
+              <td>
+                <p>Selects which of the artifact revision's <code>formats</code> the returned signature applies to, by that format's <code>mediaType</code>. This is the media type of the signed content, not of the signature. The parameter value is the media type itself, not a pre-encoded wire form. Clients shall apply query-parameter serialization once. Servers shall interpret the value after one query-decoding step.</p>
+                <p>Matching against a format's <code>mediaType</code> is case-insensitive for the type and subtype. Parameter names are compared case-insensitively; parameter values require exact equality. When omitted, the server selects a format of its choice. Requests that need a specific format's signature should supply this parameter. Successful responses include <code>Content-Location</code> with a <code>mediaType</code> query parameter naming the selected content format.</p>
+                <p>Example after serialization: <code>.../signature/download?mediaType=application%2Fvnd.cyclonedx%2Bjson</code></p>
+              </td>
+            </tr>
+            <tr>
+              <td><code>If-None-Match</code></td>
+              <td>header</td>
+              <td>No</td>
+              <td>string</td>
+              <td>Conditional request validator (RFC 9110). For artifact and signature downloads, <code>ETag</code> is the only defined validator. Servers evaluate <code>If-None-Match</code> with the weak comparison function (RFC 9110 section 13.1.2) against the <code>ETag</code> of the selected representation and answer <code>304</code> when it matches. When present, that <code>ETag</code> is a strong validator. Other validators are not defined for these operations.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>
+                <p>The detached signature for the selected format of the latest revision of the TEA Artifact, as resolved at the time of the request.</p>
+                <p>Identical to <code>artifact-signature-content</code> except for its cache policy: the latest revision changes when a new revision is published, so the response is not immutable and a cache shall revalidate it before reuse. Servers shall return a strong <code>ETag</code> for the selected representation. <code>Content-Location</code> is an absolute versioned signature download URL including <code>mediaType</code>.</p>
+              </td>
+              <td>string</td>
+            </tr>
+            <tr>
+              <td><code>302</code></td>
+              <td>
+                <p>The artifact content is available at another location, for example object storage addressed by a pre-signed URL. The client follows the <code>Location</code> header.</p>
+                <p>A client shall not send its TEA access token when following a redirect to a different origin.</p>
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td><code>304</code></td>
+              <td>The selected download representation has not changed (RFC 9110). The response body is empty. Servers shall repeat <code>ETag</code> and <code>Content-Location</code> from the would-be successful response for this operation, and shall repeat <code>Cache-Control</code> and <code>Vary</code> when the corresponding <code>200</code> carries them.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>406</code></td>
+              <td>
+                <p>The artifact revision exists, but has no format matching the requested <code>mediaType</code> or <code>Accept</code> header. Body is a TEA <code>error-response</code> with <code>error: NO_ACCEPTABLE_FORMAT</code>.</p>
+                <p><code>NO_ACCEPTABLE_FORMAT</code> reveals that the artifact revision exists. A server concealing an artifact from a client shall answer <code>404</code> with <code>error: OBJECT_UNKNOWN</code> for every sub-resource of it, formats included, instead of this status.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td><code>Content-Disposition</code></td>
+              <td>string</td>
+              <td>Suggested filename for the signature, as an <code>attachment</code> disposition per RFC 6266.</td>
+            </tr>
+            <tr>
+              <td><code>200</code></td>
+              <td><code>ETag</code></td>
+              <td>string</td>
+              <td>Strong entity tag for the signature. A signature belongs to one format of one immutable revision, so it is fixed with the revision: content that is re-signed is published as a new revision.</td>
+            </tr>
+            <tr>
+              <td><code>200</code></td>
+              <td><code>Cache-Control</code></td>
+              <td>string</td>
+              <td>
+                <p>The latest revision is a moving target: which revision it resolves to changes when a new revision is published. Servers shall not mark it immutable and shall require revalidation, so that a cache reuses stored content only after confirming, through the <code>ETag</code>, that the latest revision has not changed.</p>
+                <p>As with versioned downloads, responses containing access-controlled content shall use <code>private</code> or <code>no-store</code> (for example <code>private, no-cache</code>). Servers shall use <code>public</code> only for content available without authorization.</p>
+              </td>
+            </tr>
+            <tr>
+              <td><code>200</code></td>
+              <td><code>Content-Location</code></td>
+              <td>string</td>
+              <td>Absolute URL of the versioned signature download for the revision and format this response was resolved to, per RFC 9110 section 8.7. It includes the TEA API base, version path, and a <code>mediaType</code> query parameter naming the selected content format, so a follow-up <code>GET</code> retrieves the same signature representation.<br>Format: <code>uri</code>.</td>
+            </tr>
+            <tr>
+              <td><code>302</code></td>
+              <td><code>Location</code></td>
+              <td>string</td>
+              <td>Location the artifact content can be retrieved from.<br>Format: <code>uri</code>.</td>
+            </tr>
+            <tr>
+              <td><code>304</code></td>
+              <td><code>ETag</code></td>
+              <td>string</td>
+              <td>Same <code>ETag</code> the server would have sent on <code>200</code> for this operation.</td>
+            </tr>
+            <tr>
+              <td><code>304</code></td>
+              <td><code>Cache-Control</code></td>
+              <td>string</td>
+              <td>Same <code>Cache-Control</code> the server would have sent on <code>200</code> for this operation.</td>
+            </tr>
+            <tr>
+              <td><code>304</code></td>
+              <td><code>Content-Location</code></td>
+              <td>string</td>
+              <td>Same <code>Content-Location</code> the server would have sent on <code>200</code> for this operation.<br>Format: <code>uri</code>.</td>
+            </tr>
+            <tr>
+              <td><code>304</code></td>
+              <td><code>Vary</code></td>
+              <td>string</td>
+              <td>Same <code>Vary</code> the server would have sent on <code>200</code> for this operation, when used.</td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-getartifactbyversion">
+      <h1>Get the metadata of one TEA Artifact revision</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/{artifactVersion}</code></p>
+      <p>Get metadata for a specific revision of a specific TEA Artifact</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>UUID of TEA Artifact in the TEA server</td>
+            </tr>
+            <tr>
+              <td><code>artifactVersion</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td>integer</td>
+              <td>Version of TEA Artifact</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>Requested TEA Artifact metadata found and returned</td>
+              <td><a href="#sec-tea-schema-artifact"><code>artifact</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
     <emu-clause id="sec-tea-op-downloadartifactbyversion">
-      <h1>downloadArtifactByVersion</h1>
+      <h1>Download the content of one TEA Artifact revision</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/{artifactVersion}/download</code></p>
       <p>Download the content of a specific revision of a specific TEA Artifact.</p>
       <p>This endpoint returns the bytes of one <code>format</code> of the artifact revision. It is how a TEA server hosts artifact content itself: a format that has no external <code>url</code> is retrieved from here, selected by its <code>mediaType</code>. A format that has a <code>url</code> is retrieved from that external location instead, and this endpoint is not required to serve it.</p>
@@ -3030,209 +3231,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-downloadlatestartifactsignature">
-      <h1>downloadLatestArtifactSignature</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/latest/signature/download</code></p>
-      <p>Download the detached signature for the latest revision of a specific TEA Artifact.</p>
-      <p>Equivalent to the versioned signature endpoint, resolving to the revision with the greatest published <code>version</code> — the same revision <code>/artifact/{uuid}/latest</code> reports. As with the latest content endpoint, the response is not immutable and caches shall revalidate it via <code>ETag</code> for the selected representation; <code>Content-Location</code> is an absolute versioned signature URL including the API base, version path, and <code>mediaType</code> query parameter.</p>
-      <p>When serving the signature itself (<code>200</code>), servers shall return a strong <code>ETag</code> for the selected representation and shall honor <code>If-None-Match</code> with <code>304</code>. <code>ETag</code> is the only conditional validator for these downloads. Servers that support <code>HEAD</code> for this operation shall return the same headers as <code>GET</code> without a response body. <code>302</code> redirects are outside conditional semantics: <code>If-None-Match</code> applies only to the TEA-hosted download response, not to following an external <code>Location</code>.</p>
-      <p><code>404</code> distinguishes the cases by TEA error body: <code>OBJECT_UNKNOWN</code> when the artifact revision is unknown (or concealed), and <code>SIGNATURE_NOT_FOUND</code> when the revision exists but the selected format has no signature published. A server concealing an artifact from a client shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, including signatures.</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>UUID of TEA Artifact in the TEA server</td>
-            </tr>
-            <tr>
-              <td><code>mediaType</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>string</td>
-              <td>
-                <p>Selects which of the artifact revision's <code>formats</code> the returned signature applies to, by that format's <code>mediaType</code>. This is the media type of the signed content, not of the signature. The parameter value is the media type itself, not a pre-encoded wire form. Clients shall apply query-parameter serialization once. Servers shall interpret the value after one query-decoding step.</p>
-                <p>Matching against a format's <code>mediaType</code> is case-insensitive for the type and subtype. Parameter names are compared case-insensitively; parameter values require exact equality. When omitted, the server selects a format of its choice. Requests that need a specific format's signature should supply this parameter. Successful responses include <code>Content-Location</code> with a <code>mediaType</code> query parameter naming the selected content format.</p>
-                <p>Example after serialization: <code>.../signature/download?mediaType=application%2Fvnd.cyclonedx%2Bjson</code></p>
-              </td>
-            </tr>
-            <tr>
-              <td><code>If-None-Match</code></td>
-              <td>header</td>
-              <td>No</td>
-              <td>string</td>
-              <td>Conditional request validator (RFC 9110). For artifact and signature downloads, <code>ETag</code> is the only defined validator. Servers evaluate <code>If-None-Match</code> with the weak comparison function (RFC 9110 section 13.1.2) against the <code>ETag</code> of the selected representation and answer <code>304</code> when it matches. When present, that <code>ETag</code> is a strong validator. Other validators are not defined for these operations.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>
-                <p>The detached signature for the selected format of the latest revision of the TEA Artifact, as resolved at the time of the request.</p>
-                <p>Identical to <code>artifact-signature-content</code> except for its cache policy: the latest revision changes when a new revision is published, so the response is not immutable and a cache shall revalidate it before reuse. Servers shall return a strong <code>ETag</code> for the selected representation. <code>Content-Location</code> is an absolute versioned signature download URL including <code>mediaType</code>.</p>
-              </td>
-              <td>string</td>
-            </tr>
-            <tr>
-              <td><code>302</code></td>
-              <td>
-                <p>The artifact content is available at another location, for example object storage addressed by a pre-signed URL. The client follows the <code>Location</code> header.</p>
-                <p>A client shall not send its TEA access token when following a redirect to a different origin.</p>
-              </td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td><code>304</code></td>
-              <td>The selected download representation has not changed (RFC 9110). The response body is empty. Servers shall repeat <code>ETag</code> and <code>Content-Location</code> from the would-be successful response for this operation, and shall repeat <code>Cache-Control</code> and <code>Vary</code> when the corresponding <code>200</code> carries them.</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>406</code></td>
-              <td>
-                <p>The artifact revision exists, but has no format matching the requested <code>mediaType</code> or <code>Accept</code> header. Body is a TEA <code>error-response</code> with <code>error: NO_ACCEPTABLE_FORMAT</code>.</p>
-                <p><code>NO_ACCEPTABLE_FORMAT</code> reveals that the artifact revision exists. A server concealing an artifact from a client shall answer <code>404</code> with <code>error: OBJECT_UNKNOWN</code> for every sub-resource of it, formats included, instead of this status.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td><code>Content-Disposition</code></td>
-              <td>string</td>
-              <td>Suggested filename for the signature, as an <code>attachment</code> disposition per RFC 6266.</td>
-            </tr>
-            <tr>
-              <td><code>200</code></td>
-              <td><code>ETag</code></td>
-              <td>string</td>
-              <td>Strong entity tag for the signature. A signature belongs to one format of one immutable revision, so it is fixed with the revision: content that is re-signed is published as a new revision.</td>
-            </tr>
-            <tr>
-              <td><code>200</code></td>
-              <td><code>Cache-Control</code></td>
-              <td>string</td>
-              <td>
-                <p>The latest revision is a moving target: which revision it resolves to changes when a new revision is published. Servers shall not mark it immutable and shall require revalidation, so that a cache reuses stored content only after confirming, through the <code>ETag</code>, that the latest revision has not changed.</p>
-                <p>As with versioned downloads, responses containing access-controlled content shall use <code>private</code> or <code>no-store</code> (for example <code>private, no-cache</code>). Servers shall use <code>public</code> only for content available without authorization.</p>
-              </td>
-            </tr>
-            <tr>
-              <td><code>200</code></td>
-              <td><code>Content-Location</code></td>
-              <td>string</td>
-              <td>Absolute URL of the versioned signature download for the revision and format this response was resolved to, per RFC 9110 section 8.7. It includes the TEA API base, version path, and a <code>mediaType</code> query parameter naming the selected content format, so a follow-up <code>GET</code> retrieves the same signature representation.<br>Format: <code>uri</code>.</td>
-            </tr>
-            <tr>
-              <td><code>302</code></td>
-              <td><code>Location</code></td>
-              <td>string</td>
-              <td>Location the artifact content can be retrieved from.<br>Format: <code>uri</code>.</td>
-            </tr>
-            <tr>
-              <td><code>304</code></td>
-              <td><code>ETag</code></td>
-              <td>string</td>
-              <td>Same <code>ETag</code> the server would have sent on <code>200</code> for this operation.</td>
-            </tr>
-            <tr>
-              <td><code>304</code></td>
-              <td><code>Cache-Control</code></td>
-              <td>string</td>
-              <td>Same <code>Cache-Control</code> the server would have sent on <code>200</code> for this operation.</td>
-            </tr>
-            <tr>
-              <td><code>304</code></td>
-              <td><code>Content-Location</code></td>
-              <td>string</td>
-              <td>Same <code>Content-Location</code> the server would have sent on <code>200</code> for this operation.<br>Format: <code>uri</code>.</td>
-            </tr>
-            <tr>
-              <td><code>304</code></td>
-              <td><code>Vary</code></td>
-              <td>string</td>
-              <td>Same <code>Vary</code> the server would have sent on <code>200</code> for this operation, when used.</td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
     <emu-clause id="sec-tea-op-downloadartifactsignaturebyversion">
-      <h1>downloadArtifactSignatureByVersion</h1>
+      <h1>Download the signature of one TEA Artifact revision</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/artifact/{uuid}/{artifactVersion}/signature/download</code></p>
       <p>Download the detached signature for one format of a specific revision of a specific TEA Artifact.</p>
       <p>This is the counterpart of the artifact content endpoint, for TEA servers that host signatures themselves: a format that has no external <code>signatureUrl</code> is retrieved from here, selected by its <code>mediaType</code>. A format that has a <code>signatureUrl</code> is retrieved from that external location instead, and this endpoint is not required to serve it.</p>
@@ -3445,7 +3445,7 @@ sequenceDiagram
   <emu-clause id="sec-tea-api-tea-authentication">
     <h1>TEA Authentication</h1>
     <emu-clause id="sec-tea-op-requesttoken">
-      <h1>requestToken</h1>
+      <h1>Exchange credentials for a TEA access token</h1>
       <p><span class="tea-method">POST</span><code class="tea-path">/token</code></p>
       <p>Exchange credentials for a TEA access token.</p>
       <p>A TEA server that requires authentication on any of its endpoints shall implement this endpoint, and shall support the <code>client_credentials</code> grant type with HTTP Basic client authentication (RFC 6749 section 2.3.1, RFC 7617): the API key identifier is sent as the user-id and the API key secret as the password. A server that requires no authentication need not implement it.</p>
@@ -3527,8 +3527,143 @@ sequenceDiagram
   </emu-clause>
   <emu-clause id="sec-tea-api-tea-component">
     <h1>TEA Component</h1>
-    <emu-clause id="sec-tea-op-getteacomponentbyid">
-      <h1>getTeaComponentById</h1>
+    <emu-clause id="sec-tea-op-querycomponents">
+      <h1>Query TEA Components</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/components</code></p>
+      <p>Returns a list of TEA components. Note that multiple components may match.</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>idType</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td><a href="#sec-tea-schema-identifier-type"><code>identifier-type</code></a></td>
+              <td>Type of identifier specified in the <code>idValue</code> parameter</td>
+            </tr>
+            <tr>
+              <td><code>idValue</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>string</td>
+              <td>If present, only the objects with the given identifier value will be returned.</td>
+            </tr>
+            <tr>
+              <td><code>pageSize</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>integer</td>
+              <td>The maximum number of results to return.<br>Default: <code>25</code>. Minimum: <code>1</code>. Maximum: <code>100</code>. Format: <code>int64</code>.</td>
+            </tr>
+            <tr>
+              <td><code>pageToken</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>string</td>
+              <td>
+                <p>An opaque continuation token produced by a previous response. This token shall be copied verbatim from the <code>nextPageToken</code> value returned by the previous response. Clients shall not parse, construct, or modify this token.</p>
+                <p>The token represents continuation state for the original query, including <code>sortField</code>, <code>sortOrder</code>, result-affecting filters such as <code>idType</code> and <code>idValue</code>, and path parameters such as parent <code>uuid</code>. When <code>pageToken</code> is supplied, clients shall not change those result-affecting query parameters. Servers shall return <code>400 Bad Request</code> if supplied result-affecting query parameters conflict with the token state. To change any result-affecting parameter, clients shall start a new pagination sequence without <code>pageToken</code>.</p>
+                <p>A <code>pageToken</code> is only valid with the same request path and same path parameter values used to obtain it. Clients shall not reuse a <code>pageToken</code> across different parent resource paths or different path <code>uuid</code> values. Servers shall return <code>400 Bad Request</code> when a <code>pageToken</code> is used with a different path or different path parameter values.</p>
+                <p>Servers shall return <code>400 Bad Request</code> for malformed, invalid, expired, or conflicting <code>pageToken</code> values.</p>
+              </td>
+            </tr>
+            <tr>
+              <td><code>sortField</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>string (enum)</td>
+              <td>
+                <p>The field by which to sort the results.</p>
+                <p>Paginated results shall be ordered first by the selected <code>sortField</code>, then by <code>uuid</code> as a deterministic secondary tie-breaker.</p>
+                <p>One of: <code>name</code>. Default: <code>"name"</code>.</p>
+              </td>
+            </tr>
+            <tr>
+              <td><code>sortOrder</code></td>
+              <td>query</td>
+              <td>No</td>
+              <td>string (enum)</td>
+              <td>
+                <p>The direction of the sort.</p>
+                <p>The default is <code>asc</code> for all paginated resources. Clients that need newest release or collection versions first can request <code>sortOrder=desc</code>.</p>
+                <p>The selected sort order applies to both the primary <code>sortField</code> and the resource-specific deterministic secondary tie-breaker. For products, components, product releases, and component releases, the secondary key is <code>uuid</code>. For collections, the secondary key is <code>version</code> if additional tie-breaking is needed.</p>
+                <p>One of: <code>asc</code>, <code>desc</code>. Default: <code>"asc"</code>.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>A paginated response containing TEA Components</td>
+              <td><a href="#sec-tea-schema-paginated-component-response"><code>paginated-component-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-getcomponent">
+      <h1>Get a TEA Component</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/component/{uuid}</code></p>
       <p>Get a TEA Component</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -3626,8 +3761,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getreleasesbycomponentid">
-      <h1>getReleasesByComponentId</h1>
+    <emu-clause id="sec-tea-op-listcomponentreleases">
+      <h1>List the releases of a TEA Component</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/component/{uuid}/releases</code></p>
       <p>Get releases of the component</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -3769,146 +3904,11 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-queryteacomponents">
-      <h1>queryTeaComponents</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/components</code></p>
-      <p>Returns a list of TEA components. Note that multiple components may match.</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>idType</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td><a href="#sec-tea-schema-identifier-type"><code>identifier-type</code></a></td>
-              <td>Type of identifier specified in the <code>idValue</code> parameter</td>
-            </tr>
-            <tr>
-              <td><code>idValue</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>string</td>
-              <td>If present, only the objects with the given identifier value will be returned.</td>
-            </tr>
-            <tr>
-              <td><code>pageSize</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>integer</td>
-              <td>The maximum number of results to return.<br>Default: <code>25</code>. Minimum: <code>1</code>. Maximum: <code>100</code>. Format: <code>int64</code>.</td>
-            </tr>
-            <tr>
-              <td><code>pageToken</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>string</td>
-              <td>
-                <p>An opaque continuation token produced by a previous response. This token shall be copied verbatim from the <code>nextPageToken</code> value returned by the previous response. Clients shall not parse, construct, or modify this token.</p>
-                <p>The token represents continuation state for the original query, including <code>sortField</code>, <code>sortOrder</code>, result-affecting filters such as <code>idType</code> and <code>idValue</code>, and path parameters such as parent <code>uuid</code>. When <code>pageToken</code> is supplied, clients shall not change those result-affecting query parameters. Servers shall return <code>400 Bad Request</code> if supplied result-affecting query parameters conflict with the token state. To change any result-affecting parameter, clients shall start a new pagination sequence without <code>pageToken</code>.</p>
-                <p>A <code>pageToken</code> is only valid with the same request path and same path parameter values used to obtain it. Clients shall not reuse a <code>pageToken</code> across different parent resource paths or different path <code>uuid</code> values. Servers shall return <code>400 Bad Request</code> when a <code>pageToken</code> is used with a different path or different path parameter values.</p>
-                <p>Servers shall return <code>400 Bad Request</code> for malformed, invalid, expired, or conflicting <code>pageToken</code> values.</p>
-              </td>
-            </tr>
-            <tr>
-              <td><code>sortField</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>string (enum)</td>
-              <td>
-                <p>The field by which to sort the results.</p>
-                <p>Paginated results shall be ordered first by the selected <code>sortField</code>, then by <code>uuid</code> as a deterministic secondary tie-breaker.</p>
-                <p>One of: <code>name</code>. Default: <code>"name"</code>.</p>
-              </td>
-            </tr>
-            <tr>
-              <td><code>sortOrder</code></td>
-              <td>query</td>
-              <td>No</td>
-              <td>string (enum)</td>
-              <td>
-                <p>The direction of the sort.</p>
-                <p>The default is <code>asc</code> for all paginated resources. Clients that need newest release or collection versions first can request <code>sortOrder=desc</code>.</p>
-                <p>The selected sort order applies to both the primary <code>sortField</code> and the resource-specific deterministic secondary tie-breaker. For products, components, product releases, and component releases, the secondary key is <code>uuid</code>. For collections, the secondary key is <code>version</code> if additional tie-breaking is needed.</p>
-                <p>One of: <code>asc</code>, <code>desc</code>. Default: <code>"asc"</code>.</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>A paginated response containing TEA Components</td>
-              <td><a href="#sec-tea-schema-paginated-component-response"><code>paginated-component-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
   </emu-clause>
   <emu-clause id="sec-tea-api-tea-component-release">
     <h1>TEA Component Release</h1>
-    <emu-clause id="sec-tea-op-queryteacomponentreleases">
-      <h1>queryTeaComponentReleases</h1>
+    <emu-clause id="sec-tea-op-querycomponentreleases">
+      <h1>Query TEA Component Releases</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/componentReleases</code></p>
       <p>Returns a list of TEA component releases. Note that multiple component releases may match.</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4044,8 +4044,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getcomponentreleasebyid">
-      <h1>getComponentReleaseById</h1>
+    <emu-clause id="sec-tea-op-getcomponentrelease">
+      <h1>Get a TEA Component Release with its latest collection</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}</code></p>
       <p>Get the TEA Component Release with its latest collection</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4143,108 +4143,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getlatestcollection">
-      <h1>getLatestCollection</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}/collection/latest</code></p>
-      <p>Get the latest TEA Collection belonging to the TEA Component Release, that is, the collection with the greatest published <code>version</code>.</p>
-      <p><code>404</code> means the release is unknown; a release always has a latest collection.</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>UUID of TEA Component Release in the TEA server</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>Requested TEA Collection found and returned</td>
-              <td><a href="#sec-tea-schema-collection"><code>collection</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
-    <emu-clause id="sec-tea-op-getcollectionsbyreleaseid">
-      <h1>getCollectionsByReleaseId</h1>
+    <emu-clause id="sec-tea-op-listcomponentreleasecollections">
+      <h1>List the collections of a TEA Component Release</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}/collections</code></p>
       <p>Get the TEA Collections belonging to the TEA Component Release</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4385,8 +4285,108 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getcollection">
-      <h1>getCollection</h1>
+    <emu-clause id="sec-tea-op-getlatestcomponentreleasecollection">
+      <h1>Get the latest collection of a TEA Component Release</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}/collection/latest</code></p>
+      <p>Get the latest TEA Collection belonging to the TEA Component Release, that is, the collection with the greatest published <code>version</code>.</p>
+      <p><code>404</code> means the release is unknown; a release always has a latest collection.</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>UUID of TEA Component Release in the TEA server</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>Requested TEA Collection found and returned</td>
+              <td><a href="#sec-tea-schema-collection"><code>collection</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-getcomponentreleasecollectionbyversion">
+      <h1>Get one collection version of a TEA Component Release</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/componentRelease/{uuid}/collection/{collectionVersion}</code></p>
       <p>Get a specific Collection (by version) for a TEA Component Release by its UUID</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4494,8 +4494,8 @@ sequenceDiagram
   </emu-clause>
   <emu-clause id="sec-tea-api-tea-discovery">
     <h1>TEA Discovery</h1>
-    <emu-clause id="sec-tea-op-discoverybytei">
-      <h1>discoveryByTei</h1>
+    <emu-clause id="sec-tea-op-discover">
+      <h1>Resolve an identifier to TEA Product Releases</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/discovery</code></p>
       <p>Discovery endpoint which resolves an identifier into one or more product release UUIDs.</p>
       <p>Exactly one of the <code>tei</code> and <code>purl</code> query parameters shall be provided. A request with neither, or with both, is rejected with <code>400</code>. OpenAPI cannot express this constraint on query parameters, so both are declared optional here.</p>
@@ -4613,107 +4613,8 @@ sequenceDiagram
   </emu-clause>
   <emu-clause id="sec-tea-api-tea-product">
     <h1>TEA Product</h1>
-    <emu-clause id="sec-tea-op-getteaproductbyuuid">
-      <h1>getTeaProductByUuid</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/product/{uuid}</code></p>
-      <p>Get a TEA Product by UUID</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>UUID of the TEA product in the TEA server</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>Requested TEA Product found and returned</td>
-              <td><a href="#sec-tea-schema-product"><code>product</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
-    <emu-clause id="sec-tea-op-queryteaproducts">
-      <h1>queryTeaProducts</h1>
+    <emu-clause id="sec-tea-op-queryproducts">
+      <h1>Query TEA Products</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/products</code></p>
       <p>Returns a list of TEA products. Note that multiple products may match.</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4847,11 +4748,107 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-  </emu-clause>
-  <emu-clause id="sec-tea-api-tea-product-release">
-    <h1>TEA Product Release</h1>
-    <emu-clause id="sec-tea-op-getreleasesbyproductid">
-      <h1>getReleasesByProductId</h1>
+    <emu-clause id="sec-tea-op-getproduct">
+      <h1>Get a TEA Product</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/product/{uuid}</code></p>
+      <p>Get a TEA Product by UUID</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>UUID of the TEA product in the TEA server</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>Requested TEA Product found and returned</td>
+              <td><a href="#sec-tea-schema-product"><code>product</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-listproductreleases">
+      <h1>List the releases of a TEA Product</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/product/{uuid}/releases</code></p>
       <p>Get releases of the product</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -4993,107 +4990,11 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getteaproductreleasebyuuid">
-      <h1>getTeaProductReleaseByUuid</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}</code></p>
-      <p>Get the TEA Product Release with its latest collection</p>
-      <emu-table><emu-caption>Parameters</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>In</th>
-              <th>Required</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>uuid</code></td>
-              <td>path</td>
-              <td>Yes</td>
-              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
-              <td>UUID of TEA Product Release in the TEA server</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Responses</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Schema</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>200</code></td>
-              <td>Requested TEA Product Release and its latest Collection found and returned</td>
-              <td><a href="#sec-tea-schema-product-release-with-collection"><code>product-release-with-collection</code></a></td>
-            </tr>
-            <tr>
-              <td><code>400</code></td>
-              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>401</code></td>
-              <td>
-                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
-                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>403</code></td>
-              <td>
-                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
-                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-            <tr>
-              <td><code>404</code></td>
-              <td>
-                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
-                <ul>
-                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
-                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
-                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
-                </ul>
-                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
-              </td>
-              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-      <emu-table><emu-caption>Response headers</emu-caption>
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Header</th>
-              <th>Type</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>401</code></td>
-              <td><code>WWW-Authenticate</code></td>
-              <td>string</td>
-              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
-    </emu-clause>
-    <emu-clause id="sec-tea-op-queryteaproductreleases">
-      <h1>queryTeaProductReleases</h1>
+  </emu-clause>
+  <emu-clause id="sec-tea-api-tea-product-release">
+    <h1>TEA Product Release</h1>
+    <emu-clause id="sec-tea-op-queryproductreleases">
+      <h1>Query TEA Product Releases</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/productReleases</code></p>
       <p>Returns a list of TEA product releases. Note that multiple product releases may match.</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -5229,11 +5130,10 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getlatestcollectionforproductrelease">
-      <h1>getLatestCollectionForProductRelease</h1>
-      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/collection/latest</code></p>
-      <p>Get the latest TEA Collection belonging to the TEA Product Release, that is, the collection with the greatest published <code>version</code>.</p>
-      <p><code>404</code> means the release is unknown; a release always has a latest collection.</p>
+    <emu-clause id="sec-tea-op-getproductrelease">
+      <h1>Get a TEA Product Release with its latest collection</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}</code></p>
+      <p>Get the TEA Product Release with its latest collection</p>
       <emu-table><emu-caption>Parameters</emu-caption>
         <table>
           <thead>
@@ -5268,8 +5168,8 @@ sequenceDiagram
           <tbody>
             <tr>
               <td><code>200</code></td>
-              <td>Requested TEA Collection found and returned</td>
-              <td><a href="#sec-tea-schema-collection"><code>collection</code></a></td>
+              <td>Requested TEA Product Release and its latest Collection found and returned</td>
+              <td><a href="#sec-tea-schema-product-release-with-collection"><code>product-release-with-collection</code></a></td>
             </tr>
             <tr>
               <td><code>400</code></td>
@@ -5329,8 +5229,8 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getcollectionsbyproductreleaseid">
-      <h1>getCollectionsByProductReleaseId</h1>
+    <emu-clause id="sec-tea-op-listproductreleasecollections">
+      <h1>List the collections of a TEA Product Release</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/collections</code></p>
       <p>Get the TEA Collections belonging to the TEA Product Release</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -5471,8 +5371,108 @@ sequenceDiagram
         </table>
       </emu-table>
     </emu-clause>
-    <emu-clause id="sec-tea-op-getcollectionforproductrelease">
-      <h1>getCollectionForProductRelease</h1>
+    <emu-clause id="sec-tea-op-getlatestproductreleasecollection">
+      <h1>Get the latest collection of a TEA Product Release</h1>
+      <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/collection/latest</code></p>
+      <p>Get the latest TEA Collection belonging to the TEA Product Release, that is, the collection with the greatest published <code>version</code>.</p>
+      <p><code>404</code> means the release is unknown; a release always has a latest collection.</p>
+      <emu-table><emu-caption>Parameters</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>In</th>
+              <th>Required</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>uuid</code></td>
+              <td>path</td>
+              <td>Yes</td>
+              <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
+              <td>UUID of TEA Product Release in the TEA server</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Responses</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Description</th>
+              <th>Schema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>Requested TEA Collection found and returned</td>
+              <td><a href="#sec-tea-schema-collection"><code>collection</code></a></td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Request was invalid. For paginated requests, this includes malformed, invalid, expired, or conflicting <code>pageToken</code> values, including conflicts with continuation parameters or path parameters (<code>error: INVALID_PAGE_TOKEN</code> when a TEA error body is present). Other malformed requests may use <code>error: INVALID_REQUEST</code>.</td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>
+                <p>Authentication required, or the presented access token is expired, revoked, or otherwise invalid. Servers shall include a <code>WWW-Authenticate</code> header as defined in RFC 6750 section 3. On the <code>invalid_token</code> error a client may obtain a fresh token from <code>/token</code> and retry the request once (RFC 6750 section 3.1). The <code>WWW-Authenticate</code> challenge remains the primary signal; an <code>error-response</code> body is optional.</p>
+                <p>Servers that require no authentication on any endpoint shall not return this status. On a TEA server where some data is available without authentication, but not all, protected endpoints return <code>401</code> when no valid token is presented; endpoints that do not require authentication answer without requiring a Bearer token. A protected object shall not answer <code>404</code> solely because the client is unauthenticated: absence of a valid token yields <code>401</code>, so the client flow can discover that authentication is required.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>
+                <p>The client is authenticated, but is not authorized to access this resource or perform this operation. Authorization decisions are server-specific and are not constrained by this specification.</p>
+                <p>Servers may instead conceal the existence of a resource from an authenticated but unauthorized client by answering <code>404</code> (see <code>404-object-by-id-not-found</code>). Clients shall treat <code>403</code> and that concealing <code>404</code> as non-access; neither implies that retrying with the same token will succeed.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>
+                <p>Either the object is unknown to this server, or — where an endpoint documents it — the server does not provide an optional capability or sub-resource for that object. The cases are told apart by the TEA error body, never by the status alone:</p>
+                <ul>
+                  <li><code>error: OBJECT_UNKNOWN</code> — no such object (or its existence is concealed from this client).</li>
+                  <li><code>error: NOT_IMPLEMENTED</code> — optional capability or endpoint not provided (for CLE: lifecycle data; for <code>/token</code>: the token endpoint is not implemented). CLE is optional in TEA; clients shall not treat this as a failure of the object itself where the capability is optional.</li>
+                  <li><code>error: SIGNATURE_NOT_FOUND</code> — the artifact revision and format exist, but no signature is published for that format. This reveals that the artifact exists; a server concealing an artifact shall answer <code>OBJECT_UNKNOWN</code> for every sub-resource of it, signatures included.</li>
+                </ul>
+                <p>Concealment applies only after authentication. A request to a protected object with no valid access token shall receive <code>401</code> (see <code>401-unauthorized</code>), not a concealing <code>404</code>. Clients shall not infer from <code>404</code> alone whether the object is absent, withheld, or lacking an optional capability or sub-resource.</p>
+              </td>
+              <td><a href="#sec-tea-schema-error-response"><code>error-response</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+      <emu-table><emu-caption>Response headers</emu-caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Header</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>401</code></td>
+              <td><code>WWW-Authenticate</code></td>
+              <td>string</td>
+              <td>Bearer challenge, as defined in RFC 6750 section 3.</td>
+            </tr>
+          </tbody>
+        </table>
+      </emu-table>
+    </emu-clause>
+    <emu-clause id="sec-tea-op-getproductreleasecollectionbyversion">
+      <h1>Get one collection version of a TEA Product Release</h1>
       <p><span class="tea-method">GET</span><code class="tea-path">/productRelease/{uuid}/collection/{collectionVersion}</code></p>
       <p>Get a specific Collection (by version) for a TEA Product Release by its UUID</p>
       <emu-table><emu-caption>Parameters</emu-caption>
@@ -6249,7 +6249,7 @@ sequenceDiagram
             <td><code>uuid</code></td>
             <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
             <td>Required</td>
-            <td>UUID of the TEA Collection object. This matches the UUID of the associated TEA Component Release or TEA Product Release object. When updating a collection, only the <code>version</code> is changed.</td>
+            <td>UUID of the TEA Collection object. A TEA Collection shall use the same UUID as its parent Product Release or Component Release. Within an authoritative domain, a Product Release and a Component Release shall not share a UUID. Consequently, Collections belonging to different parent releases have different UUIDs. Versions of the same Collection retain the same UUID. See <code>doc/tea-uuid-scope.md</code>. When updating a collection, only the <code>version</code> is changed.</td>
           </tr>
           <tr>
             <td><code>version</code></td>
@@ -6630,7 +6630,7 @@ sequenceDiagram
             <td><code>uuid</code></td>
             <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
             <td>Required</td>
-            <td>A unique identifier of the TEA Component Release</td>
+            <td>A unique identifier of the TEA Component Release. Within an authoritative domain it shall not also identify a Product Release; see <code>doc/tea-uuid-scope.md</code>.</td>
           </tr>
           <tr>
             <td><code>component</code></td>
@@ -7298,7 +7298,7 @@ sequenceDiagram
             <td><code>uuid</code></td>
             <td><a href="#sec-tea-schema-uuid"><code>uuid</code></a></td>
             <td>Required</td>
-            <td>A unique identifier for the TEA Product Release</td>
+            <td>A unique identifier for the TEA Product Release. Within an authoritative domain it shall not also identify a Component Release; see <code>doc/tea-uuid-scope.md</code>.</td>
           </tr>
           <tr>
             <td><code>product</code></td>
