@@ -39,15 +39,12 @@ const TEA_README = "README.md";
 // [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs so unrelated
 // chapters can use the same heading text without collision.
 const NARRATIVE_DOCS = [
-  ["discovery/readme.md", "discovery"],
-  ["auth/readme.md", "auth"],
   ["api-flow/consumer.md", "flow-consumer"],
   ["tea-product/tea-product.md", "tea-product"],
   ["tea-product/tea-product-release.md", "tea-product-release"],
   ["tea-component/tea-component.md", "tea-component"],
   ["tea-component/tea-release.md", "tea-release"],
   ["tea-collection/tea-collection.md", "tea-collection"],
-  ["tea-artifact/tea-artifact.md", "tea-artifact"],
 ];
 
 // Normative chapters, each a top-level clause between the front matter and
