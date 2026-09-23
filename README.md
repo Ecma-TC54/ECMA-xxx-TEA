@@ -119,7 +119,10 @@ const NORMATIVE_DOCS = [
   documents carry (Ecmarkup builds its own TOC), and drops code-fence language
   hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
   Markdown tables are wrapped in `<emu-table>`, since Ecmarkup numbers and
-  styles only those (borders, header shading, print wrapping).
+  styles only those (borders, header shading, print wrapping). A paragraph
+  `Table: <title>` directly before a table (the Pandoc convention) becomes its
+  caption, rendered as "Table N: <title>"; without it the table is only
+  numbered.
   In-document links written against GitHub's heading anchors (e.g.
   `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
 - **References to normative chapter files become cross-references.** The
