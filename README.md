@@ -118,6 +118,8 @@ const NORMATIVE_DOCS = [
   nested clauses, strips the leading table-of-contents bullet list that some
   documents carry (Ecmarkup builds its own TOC), and drops code-fence language
   hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
+  Markdown tables are wrapped in `<emu-table>`, since Ecmarkup numbers and
+  styles only those (borders, header shading, print wrapping).
   In-document links written against GitHub's heading anchors (e.g.
   `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
 - **References to normative chapter files become cross-references.** The
