@@ -82,7 +82,8 @@ The Markdown chapters are **not** discovered by a glob and it is **not**
 
 ```js
 const NARRATIVE_DOCS = [
-  ["doc/tea-requirements.md", "req"],
+  ["discovery/readme.md", "discovery"],
+  ["auth/readme.md", "auth"],
   ["api-flow/consumer.md", "flow-consumer"],
   ["tea-product/tea-product.md", "tea-product"],
   ["tea-product/tea-product-release.md", "tea-product-release"],
