@@ -34,9 +34,10 @@ const OUT_FILE = path.join(HERE, "spec.html");
 const TEA_OPENAPI = "spec/openapi.yaml";
 const TEA_README = "README.md";
 
-// Informative narrative chapters, in the order they should appear in the spec.
-// Each entry is [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs
-// so unrelated chapters can use the same heading text without collision.
+// Informative narrative chapters, emitted in this order inside the
+// "Specification narrative" informative annex. Each entry is
+// [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs so unrelated
+// chapters can use the same heading text without collision.
 const NARRATIVE_DOCS = [
   ["doc/tea-requirements.md", "req"],
   ["api-flow/consumer.md", "flow-consumer"],
@@ -48,10 +49,10 @@ const NARRATIVE_DOCS = [
   ["tea-artifact/tea-artifact.md", "tea-artifact"],
 ];
 
-// Normative chapters, each a top-level clause following the narrative, in
-// this order. Each entry is [pathInTeaRepo, idPrefix, rootId]. rootId is the
-// fixed ID of the chapter's top clause, which the scope and conformance
-// excerpts reference.
+// Normative chapters, each a top-level clause between the front matter and
+// the generated API, in this order. Each entry is [pathInTeaRepo, idPrefix,
+// rootId]. rootId is the fixed ID of the chapter's top clause, which the scope
+// and conformance excerpts reference.
 const NORMATIVE_DOCS = [
   ["discovery/readme.md", "discovery", "sec-discovery"],
   ["auth/readme.md", "auth", "sec-authentication"],
@@ -114,23 +115,24 @@ async function build() {
   html += readExcerpt("0x22-normative-references.html") + "\n";
   html += readExcerpt("0x23-terms-and-definitions.html") + "\n";
 
-  // Informative narrative leads the body of the spec.
-  html += `<emu-clause id="sec-tea-narrative">\n<h1>Specification narrative</h1>\n`;
-  html += "<p>This clause is informative. The following sections are derived from the working group's authoring notes maintained as Markdown in the source repository.</p>\n";
-  for (const [rel, idPrefix] of NARRATIVE_DOCS) {
-    html += await importMarkdown(rel, idPrefix);
-  }
-  html += "</emu-clause>\n";
-
   // Normative chapters, each a top-level clause.
   for (const [rel, idPrefix, rootId] of NORMATIVE_DOCS) {
     html += await importMarkdown(rel, idPrefix, { rootId });
   }
-  await closeMermaidRenderer();
 
   // Generated API surface + data model follow the normative chapters.
   const openapiYaml = await fetchTeaFile(TEA_OPENAPI);
   html += await openApiToEmu(openapiYaml);
+
+  // Informative narrative, as an annex after the data model (ISO places
+  // informative material in the Introduction or in informative annexes).
+  html += `<emu-annex id="sec-tea-narrative">\n<h1>Specification narrative</h1>\n`;
+  html += "<p>The following sections are derived from the working group's authoring notes maintained as Markdown in the source repository.</p>\n";
+  for (const [rel, idPrefix] of NARRATIVE_DOCS) {
+    html += await importMarkdown(rel, idPrefix, { element: "emu-annex" });
+  }
+  html += "</emu-annex>\n";
+  await closeMermaidRenderer();
 
   // Back matter.
   html += readExcerpt("1x10-bibliography.html") + "\n";

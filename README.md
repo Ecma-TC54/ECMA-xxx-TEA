@@ -73,12 +73,12 @@ The Markdown chapters are **not** discovered by a glob and it is **not**
 "every `.md` file in the repo". They come from two hand-curated lists in
 `index.js`:
 
-- `NARRATIVE_DOCS` — informative chapters, emitted inside the "Specification
-  narrative" clause, which states that it is informative. Each entry is
-  `[pathInTeaRepo, idPrefix]`.
 - `NORMATIVE_DOCS` — normative chapters, each emitted as its own top-level
-  clause after the narrative and before the generated API. Each entry is
+  clause after the front matter and before the generated API. Each entry is
   `[pathInTeaRepo, idPrefix, rootId]`.
+- `NARRATIVE_DOCS` — informative chapters, emitted inside the "Specification
+  narrative" informative annex, which follows the data model. Each entry is
+  `[pathInTeaRepo, idPrefix]`.
 
 ```js
 const NARRATIVE_DOCS = [
@@ -111,11 +111,15 @@ const NORMATIVE_DOCS = [
 - **`rootId` pins a normative chapter's ID.** The chapter's top clause (its
   `#` heading) gets this fixed ID instead of a generated one, so the scope and
   conformance excerpts can reference the chapter without depending on its
-  heading text. The chapter's sub-clauses keep their generated IDs.
+  heading text. The generated ID is kept as an Ecmarkup `oldids` alias, so
+  existing deep links still resolve. The chapter's sub-clauses keep their
+  generated IDs.
 - **Conversion.** `lib/md-to-emu.js` maps Markdown headings (`#`…`######`) to
   nested clauses, strips the leading table-of-contents bullet list that some
   documents carry (Ecmarkup builds its own TOC), and drops code-fence language
   hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
+  In-document links written against GitHub's heading anchors (e.g.
+  `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
 - **Mermaid diagrams are pre-rendered.** Each ```` ```mermaid ```` fence is
   rendered to inline SVG at generate time by `lib/mermaid.js` (using
   `@mermaid-js/mermaid-cli` and a headless Chrome through puppeteer) and
