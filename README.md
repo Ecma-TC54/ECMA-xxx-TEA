@@ -25,8 +25,8 @@ Three things are pulled from there at build time (see
 for the exact details):
 
 - `spec/openapi.yaml` — the API surface and the data model are generated from it.
-- A curated, ordered list of narrative Markdown files — imported as
-  specification prose.
+- Two curated, ordered lists of Markdown files — the normative Discovery and
+  Authentication chapters, and the informative narrative.
 - The `## Introduction` section of the upstream `README.md` — used as the
   spec's Introduction.
 
@@ -66,17 +66,22 @@ The `<ref>` is set by `TEA_SOURCE_REF` in `index.js` and currently tracks
 publication build, for reproducibility). Fetched files are cached under
 `tea-source/` (git-ignored) so repeated builds don't re-download.
 
-### Narrative Markdown — an explicit, ordered allowlist
+### Markdown chapters — explicit, ordered allowlists
 
-The narrative chapters are **not** discovered by a glob and it is **not**
-"every `.md` file in the repo". They come from a hand-curated list,
-`NARRATIVE_DOCS` in `index.js`. Each entry is `[pathInTeaRepo, idPrefix]`:
+The Markdown chapters are **not** discovered by a glob and it is **not**
+"every `.md` file in the repo". They come from two hand-curated lists in
+`index.js`:
+
+- `NARRATIVE_DOCS` — informative chapters, emitted inside the "Specification
+  narrative" clause, which states that it is informative. Each entry is
+  `[pathInTeaRepo, idPrefix]`.
+- `NORMATIVE_DOCS` — normative chapters, each emitted as its own top-level
+  clause after the narrative and before the generated API. Each entry is
+  `[pathInTeaRepo, idPrefix, rootId]`.
 
 ```js
 const NARRATIVE_DOCS = [
   ["doc/tea-requirements.md", "req"],
-  ["discovery/readme.md", "discovery"],
-  ["auth/readme.md", "auth"],
   ["api-flow/consumer.md", "flow-consumer"],
   ["tea-product/tea-product.md", "tea-product"],
   ["tea-product/tea-product-release.md", "tea-product-release"],
@@ -84,6 +89,11 @@ const NARRATIVE_DOCS = [
   ["tea-component/tea-release.md", "tea-release"],
   ["tea-collection/tea-collection.md", "tea-collection"],
   ["tea-artifact/tea-artifact.md", "tea-artifact"],
+];
+
+const NORMATIVE_DOCS = [
+  ["discovery/readme.md", "discovery", "sec-discovery"],
+  ["auth/readme.md", "auth", "sec-authentication"],
 ];
 ```
 
@@ -96,6 +106,10 @@ const NARRATIVE_DOCS = [
   The prefix namespaces the IDs so two chapters can use the same heading text
   (e.g. "Overview") without producing duplicate IDs, and so that
   cross-references and deep links stay stable across rebuilds.
+- **`rootId` pins a normative chapter's ID.** The chapter's top clause (its
+  `#` heading) gets this fixed ID instead of a generated one, so the scope and
+  conformance excerpts can reference the chapter without depending on its
+  heading text. The chapter's sub-clauses keep their generated IDs.
 - **Conversion.** `lib/md-to-emu.js` maps Markdown headings (`#`…`######`) to
   nested clauses, strips the leading table-of-contents bullet list that some
   documents carry (Ecmarkup builds its own TOC), and drops code-fence language
