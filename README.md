@@ -25,8 +25,9 @@ Three things are pulled from there at build time (see
 for the exact details):
 
 - `spec/openapi.yaml` — the API surface and the data model are generated from it.
-- Two curated, ordered lists of Markdown files — the normative Discovery and
-  Authentication chapters, and the informative narrative.
+- Two curated, ordered lists of Markdown files — the normative Discovery,
+  Authentication and UUID Scope and Stability chapters, and the informative
+  narrative.
 - The `## Introduction` section of the upstream `README.md` — used as the
   spec's Introduction.
 
@@ -94,6 +95,7 @@ const NARRATIVE_DOCS = [
 const NORMATIVE_DOCS = [
   ["discovery/readme.md", "discovery", "sec-discovery"],
   ["auth/readme.md", "auth", "sec-authentication"],
+  ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
 ```
 

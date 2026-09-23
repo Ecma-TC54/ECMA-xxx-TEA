@@ -55,6 +55,7 @@ const NARRATIVE_DOCS = [
 const NORMATIVE_DOCS = [
   ["discovery/readme.md", "discovery", "sec-discovery"],
   ["auth/readme.md", "auth", "sec-authentication"],
+  ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
 
 async function fetchTeaFile(relPath) {
