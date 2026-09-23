@@ -75,18 +75,15 @@ The narrative chapters are **not** discovered by a glob and it is **not**
 ```js
 const NARRATIVE_DOCS = [
   ["doc/tea-requirements.md", "req"],
-  ["doc/tea-usecases.md", "uc"],
   ["discovery/readme.md", "discovery"],
   ["auth/readme.md", "auth"],
   ["api-flow/consumer.md", "flow-consumer"],
-  ["api-flow/publisher.md", "flow-publisher"],
   ["tea-product/tea-product.md", "tea-product"],
   ["tea-product/tea-product-release.md", "tea-product-release"],
   ["tea-component/tea-component.md", "tea-component"],
   ["tea-component/tea-release.md", "tea-release"],
   ["tea-collection/tea-collection.md", "tea-collection"],
   ["tea-artifact/tea-artifact.md", "tea-artifact"],
-  ["signatures/signature.md", "signatures"],
 ];
 ```
 
