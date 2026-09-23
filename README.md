@@ -120,6 +120,13 @@ const NORMATIVE_DOCS = [
   hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
   In-document links written against GitHub's heading anchors (e.g.
   `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
+- **References to normative chapter files become cross-references.** The
+  sources refer to each other by file path, as Markdown links
+  (`../auth/readme.md`) or as code (`` `doc/tea-uuid-scope.md` `` in the
+  OpenAPI descriptions). `index.js` maps each `NORMATIVE_DOCS` path to its
+  `rootId` and rewrites those references in the assembled document to
+  `<emu-xref>`s. Any remaining reference to a `.md` file is logged as a
+  warning, since it leads nowhere in the published specification.
 - **Mermaid diagrams are pre-rendered.** Each ```` ```mermaid ```` fence is
   rendered to inline SVG at generate time by `lib/mermaid.js` (using
   `@mermaid-js/mermaid-cli` and a headless Chrome through puppeteer) and

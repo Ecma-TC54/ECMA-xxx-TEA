@@ -59,6 +59,25 @@ const NORMATIVE_DOCS = [
   ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
 
+// Chapter IDs by TEA source path. The sources refer to each other by file path,
+// as Markdown links ("../auth/readme.md", "/discovery/readme.md") or as code
+// ("see `doc/tea-uuid-scope.md`" in the OpenAPI descriptions); in the spec
+// those become cross-references to the chapter.
+const CHAPTER_IDS = new Map(NORMATIVE_DOCS.map(([rel, , rootId]) => [rel, rootId]));
+
+function linkChapterReferences(html) {
+  for (const [rel, id] of CHAPTER_IDS) {
+    const file = `(?:\\.{0,2}/)*${rel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`;
+    html = html
+      .replace(new RegExp(`<a href="${file}"[^>]*>([\\s\\S]*?)</a>`, "g"), `<emu-xref href="#${id}">$1</emu-xref>`)
+      .replace(new RegExp(`<code>${file}</code>`, "g"), `<emu-xref href="#${id}" title></emu-xref>`);
+  }
+  for (const m of html.matchAll(/href="([^"#:]*\.md(?:#[^"]*)?)"|<code>([^<\s]*\.md)<\/code>/g)) {
+    console.warn(`unresolved reference to TEA source file: ${m[1] || m[2]}`);
+  }
+  return html;
+}
+
 async function fetchTeaFile(relPath) {
   const cached = path.join(CACHE_DIR, relPath);
   if (fs.existsSync(cached)) return fs.readFileSync(cached, "utf-8");
@@ -137,6 +156,8 @@ async function build() {
   // Back matter.
   html += readExcerpt("1x10-bibliography.html") + "\n";
   html += readExcerpt("1x20-colophon.html") + "\n";
+
+  html = linkChapterReferences(html);
 
   // js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-
   // printing and restore afterwards.
