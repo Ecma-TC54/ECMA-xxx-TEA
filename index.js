@@ -49,13 +49,19 @@ const NARRATIVE_DOCS = [
 
 // Normative chapters, each a top-level clause between the front matter and
 // the generated API, in this order. Each entry is [pathInTeaRepo, idPrefix,
-// rootId]. rootId is the fixed ID of the chapter's top clause, which the scope
-// and conformance excerpts reference.
+// rootId, options]. rootId is the fixed ID of the chapter's top clause, which
+// the scope and conformance excerpts reference. options.normativeOptional
+// marks a chapter whose requirements apply only to implementations that
+// provide its feature (authentication is optional for a TEA server).
 const NORMATIVE_DOCS = [
   ["discovery/readme.md", "discovery", "sec-discovery"],
-  ["auth/readme.md", "auth", "sec-authentication"],
+  ["auth/readme.md", "auth", "sec-authentication", { normativeOptional: true }],
   ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
+
+// OpenAPI tags whose operations are normative optional: the `/token` operation
+// is implemented only by servers that require authentication.
+const NORMATIVE_OPTIONAL_TAGS = ["TEA Authentication"];
 
 // Chapter IDs by TEA source path. The sources refer to each other by file path,
 // as Markdown links ("../auth/readme.md", "/discovery/readme.md") or as code
@@ -133,13 +139,13 @@ async function build() {
   html += readExcerpt("0x23-terms-and-definitions.html") + "\n";
 
   // Normative chapters, each a top-level clause.
-  for (const [rel, idPrefix, rootId] of NORMATIVE_DOCS) {
-    html += await importMarkdown(rel, idPrefix, { rootId });
+  for (const [rel, idPrefix, rootId, options] of NORMATIVE_DOCS) {
+    html += await importMarkdown(rel, idPrefix, { rootId, ...options });
   }
 
   // Generated API surface + data model follow the normative chapters.
   const openapiYaml = await fetchTeaFile(TEA_OPENAPI);
-  html += await openApiToEmu(openapiYaml);
+  html += await openApiToEmu(openapiYaml, { normativeOptionalTags: NORMATIVE_OPTIONAL_TAGS });
 
   // Informative narrative, as an annex after the data model (ISO places
   // informative material in the Introduction or in informative annexes).
