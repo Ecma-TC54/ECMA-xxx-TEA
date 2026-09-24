@@ -3,9 +3,33 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    groups:
+      npm-minor-updates:
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    # GitHub's own actions are pinned by major version tag, so only major bumps are proposed.
+    ignore:
+      - dependency-name: "actions/*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "github/*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+    groups:
+      github-actions-minor-updates:
+        update-types:
+          - "minor"
+          - "patch"
