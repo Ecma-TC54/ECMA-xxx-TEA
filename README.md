@@ -75,7 +75,7 @@ The Markdown chapters are **not** discovered by a glob and it is **not**
 
 - `NORMATIVE_DOCS` — normative chapters, each emitted as its own top-level
   clause after the front matter and before the generated API. Each entry is
-  `[pathInTeaRepo, idPrefix, rootId]`.
+  `[pathInTeaRepo, idPrefix, rootId, options]`.
 - `NARRATIVE_DOCS` — informative chapters, emitted inside the "Specification
   narrative" informative annex, which follows the data model. Each entry is
   `[pathInTeaRepo, idPrefix]`.
@@ -92,7 +92,7 @@ const NARRATIVE_DOCS = [
 
 const NORMATIVE_DOCS = [
   ["discovery/readme.md", "discovery", "sec-discovery"],
-  ["auth/readme.md", "auth", "sec-authentication"],
+  ["auth/readme.md", "auth", "sec-authentication", { normativeOptional: true }],
   ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
 ```
@@ -106,6 +106,12 @@ const NORMATIVE_DOCS = [
   The prefix namespaces the IDs so two chapters can use the same heading text
   (e.g. "Overview") without producing duplicate IDs, and so that
   cross-references and deep links stay stable across rebuilds.
+- **`normativeOptional` labels a chapter "Normative Optional".** The chapter's
+  top clause gets ecmarkup's `normative-optional` attribute: its requirements
+  apply only to implementations that provide the feature (authentication is
+  optional for a TEA server). `NORMATIVE_OPTIONAL_TAGS` in `index.js` does the
+  same for API sections by OpenAPI tag (`TEA Authentication`, the `/token`
+  operation); the build warns if a listed tag is not in the OpenAPI document.
 - **`rootId` pins a normative chapter's ID.** The chapter's top clause (its
   `#` heading) gets this fixed ID instead of a generated one, so the scope and
   conformance excerpts can reference the chapter without depending on its
