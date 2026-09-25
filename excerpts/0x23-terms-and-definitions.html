@@ -5,78 +5,115 @@
     <p>For the purposes of this Standard, the following terms and definitions apply:</p>
 
     <emu-clause id="sec-terms-and-definitions-authn">
-      <h1>Authentication (<dfn id="authn">authn</dfn>)</h1>
+      <h1>Authentication</h1>
+      <p><strong><dfn id="authn">authn</dfn></strong></p>
       <p>process of verifying the identity of a principal</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-authz">
-      <h1>Authorization (<dfn id="authz">authz</dfn>)</h1>
+      <h1>Authorization</h1>
+      <p><strong><dfn id="authz">authz</dfn></strong></p>
       <p>process of determining what a verified principal is permitted to do</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-collection">
       <h1>Collection</h1>
       <p>versioned list of the TEA Artifacts of one Component Release or one Product Release</p>
-      <p>Note 1 to entry: A Collection has the same UUID as the release it belongs to. A change to its content produces a new version, which records the reason for the change.</p>
+
+      <emu-note>
+        <p>A Collection has the same UUID as the release to which it belongs. A change to its content produces a new version, which records the reason for the change.</p>
+      </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-compliance-document">
       <h1>Compliance document</h1>
       <p>document describing the compliance, certification or regulatory status of a Component, for example a SOC 2 report</p>
-      <p>Note 1 to entry: A compliance document is published as a TEA Artifact of a Component Release. The Component or Component Release is marked with the <code>COMPLIANCE_DOCUMENT</code> identifier type so that it can be discovered.</p>
+
+      <emu-note>
+        <p>A compliance document is published as a TEA Artifact of a Component Release. The Component or Component Release is marked with the <code>COMPLIANCE_DOCUMENT</code> identifier type so that it can be discovered.</p>
+      </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-component">
       <h1>Component</h1>
       <p>software or hardware item whose successive versions are Component Releases</p>
-      <p>Note 1 to entry: A Product Release can reference Components and specific Component Releases.</p>
+
+      <emu-note>
+        <p>A Product Release can reference Components and specific Component Releases.</p>
+      </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-component-release">
       <h1>Component Release</h1>
       <p>specific version of a Component</p>
-      <p>Note 1 to entry: Each Component Release has its own Collection.</p>
+
+      <emu-note>
+        <p>Each Component Release has its own Collection.</p>
+      </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-discovery-document">
       <h1>Discovery document</h1>
       <p>JSON document served at <code>/.well-known/tea</code> on the host named by the domain name of a TEI, listing the TEA server endpoints for that domain and the API versions they support</p>
     </emu-clause>
+
+    <emu-clause id="sec-terms-and-definitions-ean-code">
+      <h1><dfn variants="EAN,EAN codes,UPC">UPC or EAN code</dfn></h1>
+      <p>unique number and barcode used primarily in retail and trade</p>
+    </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-product">
       <h1>Product</h1>
       <p>item sold, distributed or otherwise delivered under one name</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-product-release">
       <h1>Product Release</h1>
       <p>specific version of a Product that can be acquired or downloaded</p>
-      <p>Note 1 to entry: A TEI resolves to one or more Product Releases.</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-sbom">
       <h1>Software bill of materials</h1>
       <p><strong>SBOM</strong></p>
       <p>structured inventory of the software components of a product, with their versions, identifiers and dependencies</p>
-      <p>Note 1 to entry: CycloneDX, specified in ECMA-424, is one format for SBOMs.</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-tea-artefact">
       <h1>TEA Artifact</h1>
       <p>security-related document, such as an SBOM, a VEX document or an attestation, published in one or more formats and identified by a UUID and a version</p>
-      <p>Note 1 to entry: A TEA Artifact can be referenced by several Collections.</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-tea-client">
       <h1>TEA client</h1>
       <p>software that retrieves information from a TEA server using the API defined in this Standard</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-tea-server">
       <h1>TEA server</h1>
       <p>server that implements the API defined in this Standard</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-tei">
       <h1>Transparency Exchange Identifier</h1>
       <p><strong>TEI</strong></p>
       <p>URI of the form <code>tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code> that identifies one or more Product Releases</p>
-      <p>Note 1 to entry: The domain name of a TEI is used to locate the TEA server; see <emu-xref href="#sec-discovery">the Discovery chapter</emu-xref>.</p>
+
+      <emu-note>
+        <p>The domain name of a TEI is used to locate the TEA server; see Clause <emu-xref href="#sec-discovery"></emu-xref>.</p>
+      </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-vex">
       <h1>Vulnerability Exploitability eXchange document</h1>
       <p><strong>VEX document</strong></p>
       <p>document stating, for a product, the exploitability status of known vulnerabilities</p>
-      <p>Note 1 to entry: A VEX document states, for example, whether a vulnerability affects the product, does not affect it, or is mitigated.</p>
+
+      <emu-note>
+        <p>A VEX document states, for example, whether a vulnerability affects the product, does not affect it, or is mitigated.</p>
+      </emu-note>
     </emu-clause>
   </emu-clause>
+
   <emu-clause id="sec-abbreviations">
     <h1>Acronyms and abbreviations</h1>
 
@@ -89,7 +126,7 @@
         </thead>
           <tbody>
             <tr>
-              <th><dfn id="api">API</dfn></th>
+              <th>API</th>
               <td>Application Programming Interface</td>
             </tr>
             <tr>
@@ -109,7 +146,7 @@
               <td>Transparency Exchange API</td>
             </tr>
             <tr>
-              <th><dfn id="tei">TEI</dfn></th>
+              <th>TEI</th>
               <td>Transparency Exchange Identifier</td>
             </tr>
             <tr>
