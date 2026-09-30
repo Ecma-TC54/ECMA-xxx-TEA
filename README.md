@@ -28,6 +28,7 @@ for the exact details):
 - Two curated, ordered lists of Markdown files — the normative Discovery,
   Authentication and UUID Scope and Stability chapters, and the informative
   narrative.
+- `discovery/tea-well-known.schema.json` — rendered as a normative annex.
 - The `## Introduction` section of the upstream `README.md` — used as the
   spec's Introduction.
 
@@ -55,6 +56,7 @@ CycloneDX/transparency-exchange-api  (Markdown + OpenAPI)
 | `index.js` | Fetches TEA sources and assembles `spec.html`. |
 | `lib/md-to-emu.js` | Markdown → nested `<emu-clause>` conversion. |
 | `lib/openapi-to-emu.js` | OpenAPI → API-surface and data-model clauses. |
+| `lib/json-schema-to-emu.js` | JSON Schema → well-known discovery annex. |
 | `excerpts/` | Hand-authored front/back matter (header, scope, conformance, references, terms, bibliography, colophon). |
 | `spec.html` | Generated Ecmarkup source, committed for reviewer diff-ability. |
 
@@ -203,6 +205,19 @@ preserving named-schema identity) and emits two top-level clauses:
 > table. `oneOf` / `anyOf` variants are listed as links but not merged. The
 > build also expects internal (`#/components/...`) refs only — there are no
 > external `$ref`s in the current document.
+
+### `discovery/tea-well-known.schema.json` — normative annex
+
+`lib/json-schema-to-emu.js` renders that JSON Schema as a **normative annex**
+(`#sec-tea-well-known-schema`) immediately after the data model and before the
+informative "Specification narrative" annex. Nested `definitions` become child
+annexes (`#sec-tea-well-known-<name>`). Discovery's GitHub-relative Markdown
+link `[TEA Well-Known Schema](tea-well-known.schema.json)` is rewritten to an
+`<emu-xref>` to that annex, so the reference works in the published HTML and
+PDF while remaining a file link on GitHub.
+
+The annex is generated from the same TEA source revision as the rest of the
+build. It is not a separately maintained copy of the schema.
 
 ### `README.md` — Introduction only
 
