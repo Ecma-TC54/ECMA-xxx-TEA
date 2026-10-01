@@ -13,6 +13,17 @@
       transform: rotate(-60deg);
     }
   }
+  /* A printed page cannot scroll sideways: wrap long lines and unbroken
+     tokens (URLs, TEIs, digests) in code at the margin. */
+  pre, code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  /* ecmarkup centres an example in a flex column, which sizes it to its
+     longest line rather than to the page, so nothing would wrap. */
+  emu-example figure {
+    display: block;
+  }
 </style>
 <style>
   figure pre {
