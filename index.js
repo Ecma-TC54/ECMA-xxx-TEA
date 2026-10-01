@@ -155,8 +155,8 @@ async function build() {
   // Normative annex: the .well-known/tea JSON Schema, imported from the same
   // TEA source revision as the Discovery chapter that references it.
   try {
-    const wellKnown = JSON.parse(await fetchTeaFile(WELL_KNOWN_SOURCE_PATH));
-    html += jsonSchemaToEmuAnnex(wellKnown);
+    const wellKnownText = await fetchTeaFile(WELL_KNOWN_SOURCE_PATH);
+    html += jsonSchemaToEmuAnnex(JSON.parse(wellKnownText), { sourceJson: wellKnownText });
   } catch (err) {
     console.warn(`skipping ${WELL_KNOWN_SOURCE_PATH}: ${err.message}`);
   }

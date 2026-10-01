@@ -209,15 +209,19 @@ preserving named-schema identity) and emits two top-level clauses:
 ### `discovery/tea-well-known.schema.json` — normative annex
 
 `lib/json-schema-to-emu.js` renders that JSON Schema as a **normative annex**
-(`#sec-tea-well-known-schema`) immediately after the data model and before the
-informative "Specification narrative" annex. Nested `definitions` become child
-annexes (`#sec-tea-well-known-<name>`). Discovery's GitHub-relative Markdown
-link `[TEA Well-Known Schema](tea-well-known.schema.json)` is rewritten to an
+(`<emu-annex … normative>`, `#sec-tea-well-known-schema`) immediately after
+the data model and before the informative "Specification narrative" annex.
+The imported JSON is emitted verbatim as the schema; the tables that follow
+summarise it, including item-level `description` and `examples`. Nested
+`definitions` become child annexes (`#sec-tea-well-known-<name>`), also
+marked normative. Discovery's GitHub-relative Markdown link
+`[TEA Well-Known Schema](tea-well-known.schema.json)` is rewritten to an
 `<emu-xref>` to that annex, so the reference works in the published HTML and
 PDF while remaining a file link on GitHub.
 
 The annex is generated from the same TEA source revision as the rest of the
-build. It is not a separately maintained copy of the schema.
+build. It is not a separately maintained copy of the schema. The dialect
+(JSON Schema draft-07 Core and Validation) is listed in Normative references.
 
 ### `README.md` — Introduction only
 
