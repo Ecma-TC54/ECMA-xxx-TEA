@@ -128,7 +128,11 @@ const NORMATIVE_DOCS = [
   styles only those (borders, header shading, print wrapping). A paragraph
   `Table: <title>` directly before a table (the Pandoc convention) becomes its
   caption, rendered as "Table N: <title>"; without it the table is only
-  numbered.
+  numbered. The caption may end in a Pandoc attribute block:
+  `Table: TEI types {#tbl-tei-types .informative}` gives the table the ID
+  `tbl-tei-types`, which `<emu-xref href="#tbl-tei-types">` can reference,
+  and renders it as "Table N (Informative): TEI types". Either attribute may
+  be used alone, and `Table: {.informative}` marks a table without a caption.
   In-document links written against GitHub's heading anchors (e.g.
   `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
 - **References to normative chapter files become cross-references.** The

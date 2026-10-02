@@ -87,6 +87,26 @@ function linkChapterReferences(html) {
   return html;
 }
 
+// Prince sizes a table column to at least its longest unbreakable run of text,
+// whatever `overflow-wrap` says, so a long opaque token in a cell (a digest, a
+// Base64URL identifier, an encoded query string) pushes the table past the
+// printed page. Offer break points inside such runs in table code: after "?",
+// "&", "=" and ".", then every 16 characters where that is not enough. <wbr>
+// renders as nothing and is not copied with the text.
+const LONG_RUN = /(?:&[#a-z0-9]+;|[^\s/&<-]){32,}/gi;
+const RUN_CHUNK = /(?:&[#a-z0-9]+;|.){1,16}/gi;
+
+function breakLongTableCode(html) {
+  const breakRun = run => run
+    .replace(/(&amp;|[?=.])(?!$)/g, "$1<wbr>")
+    .split("<wbr>")
+    .map(piece => piece.length > 24 ? piece.match(RUN_CHUNK).join("<wbr>") : piece)
+    .join("<wbr>");
+  return html.replace(/<emu-table\b[\s\S]*?<\/emu-table>/g, table =>
+    table.replace(/(<code>)([^<]*)(<\/code>)/g, (m, open, text, close) =>
+      open + text.replace(LONG_RUN, breakRun) + close));
+}
+
 async function fetchTeaFile(relPath) {
   const cached = path.join(CACHE_DIR, relPath);
   if (fs.existsSync(cached)) return fs.readFileSync(cached, "utf-8");
@@ -176,6 +196,7 @@ async function build() {
   html += readExcerpt("1x20-colophon.html") + "\n";
 
   html = linkWellKnownSchema(linkChapterReferences(html));
+  html = breakLongTableCode(html);
 
   // js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-
   // printing and restore afterwards.
