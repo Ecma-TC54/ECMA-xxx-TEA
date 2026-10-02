@@ -14,6 +14,11 @@ import MarkdownIt from "markdown-it";
 import { markdownToEmuClauses } from "./lib/md-to-emu.js";
 import { closeMermaidRenderer } from "./lib/mermaid.js";
 import { openApiToEmu } from "./lib/openapi-to-emu.js";
+import {
+  WELL_KNOWN_SOURCE_PATH,
+  jsonSchemaToEmuAnnex,
+  linkWellKnownSchema,
+} from "./lib/json-schema-to-emu.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -167,6 +172,15 @@ async function build() {
   const openapiYaml = await fetchTeaFile(TEA_OPENAPI);
   html += await openApiToEmu(openapiYaml, { normativeOptionalTags: NORMATIVE_OPTIONAL_TAGS });
 
+  // Normative annex: the .well-known/tea JSON Schema, imported from the same
+  // TEA source revision as the Discovery chapter that references it.
+  try {
+    const wellKnownText = await fetchTeaFile(WELL_KNOWN_SOURCE_PATH);
+    html += jsonSchemaToEmuAnnex(JSON.parse(wellKnownText), { sourceJson: wellKnownText });
+  } catch (err) {
+    console.warn(`skipping ${WELL_KNOWN_SOURCE_PATH}: ${err.message}`);
+  }
+
   // Informative narrative, as an annex after the data model (ISO places
   // informative material in the Introduction or in informative annexes).
   html += `<emu-annex id="sec-tea-narrative">\n<h1>Specification narrative</h1>\n`;
@@ -181,7 +195,7 @@ async function build() {
   html += readExcerpt("1x10-bibliography.html") + "\n";
   html += readExcerpt("1x20-colophon.html") + "\n";
 
-  html = linkChapterReferences(html);
+  html = linkWellKnownSchema(linkChapterReferences(html));
   html = breakLongTableCode(html);
 
   // js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-
