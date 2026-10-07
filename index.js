@@ -10,7 +10,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import beautify from "js-beautify";
-import MarkdownIt from "markdown-it";
 import { markdownToEmuClauses } from "./lib/md-to-emu.js";
 import { closeMermaidRenderer } from "./lib/mermaid.js";
 import { openApiToEmu } from "./lib/openapi-to-emu.js";
@@ -37,7 +36,10 @@ const OUT_FILE = path.join(HERE, "spec.html");
 
 // Paths inside the TEA source repository, relative to its root.
 const TEA_OPENAPI = "spec/openapi.yaml";
-const TEA_README = "README.md";
+
+// The Introduction, imported in full. Its level-1 heading becomes the
+// <emu-intro> itself and its sections become unnumbered subclauses.
+const TEA_INTRODUCTION = "ecma-doc/introduction.md";
 
 // Informative narrative chapters, emitted in this order inside the
 // "Specification narrative" informative annex. Each entry is
@@ -145,17 +147,12 @@ async function build() {
 
   html += readExcerpt("0x00-header.html") + "\n";
 
-  const readme = await fetchTeaFile(TEA_README);
-  const introMatch = /## Introduction\n([\s\S]*?)(?=\n## )/.exec(readme);
-  const introMd = introMatch ? introMatch[1].trim() : "";
-  html += `<emu-intro id="sec-intro">\n<h1>Introduction</h1>\n`;
-  if (introMd) {
-    const mdi = new MarkdownIt({ html: true, linkify: true });
-    html += mdi.render(introMd) + "\n";
-  } else {
-    html += "<p>The Transparency Exchange API (TEA) standardises the exchange of supply-chain transparency artefacts.</p>\n";
-  }
-  html += "</emu-intro>\n";
+  // ecmarkup requires an Introduction with this ID; keep a placeholder if the
+  // source cannot be fetched.
+  html += await importMarkdown(TEA_INTRODUCTION, "intro", { rootId: "sec-intro", element: "emu-intro" })
+    || `<emu-intro id="sec-intro">\n<h1>Introduction</h1>\n`
+      + "<p>The Transparency Exchange API (TEA) standardises the exchange of supply-chain transparency artefacts.</p>\n"
+      + "</emu-intro>\n";
 
   // Front matter (skeletons authored as excerpts).
   html += readExcerpt("0x20-scope.html") + "\n";

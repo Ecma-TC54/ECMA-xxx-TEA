@@ -20,7 +20,7 @@ in the OWASP/CycloneDX TEA source repository:
 
 > <https://github.com/CycloneDX/transparency-exchange-api>
 
-Three things are pulled from there at build time (see
+Four things are pulled from there at build time (see
 [What gets pulled from the TEA source](#what-gets-pulled-from-the-tea-source)
 for the exact details):
 
@@ -29,8 +29,7 @@ for the exact details):
   Authentication and UUID Scope and Stability chapters, and the informative
   narrative.
 - `discovery/tea-well-known.schema.json` — rendered as a normative annex.
-- The `## Introduction` section of the upstream `README.md` — used as the
-  spec's Introduction.
+- `ecma-doc/introduction.md` — used in full as the spec's Introduction.
 
 This repository owns the **publication pipeline**: it converts those sources
 into an [Ecmarkup](https://github.com/tc39/ecmarkup) document and renders it to
@@ -227,11 +226,12 @@ The annex is generated from the same TEA source revision as the rest of the
 build. It is not a separately maintained copy of the schema. The dialect
 (JSON Schema draft-07 Core and Validation) is listed in Normative references.
 
-### `README.md` — Introduction only
+### `ecma-doc/introduction.md` — Introduction
 
-Only the `## Introduction` section of the upstream `README.md` is extracted
-(by `index.js`) and rendered as the spec's Introduction. The rest of that
-README is ignored.
+The whole file is imported as the spec's Introduction. Its level-1 heading
+becomes the `<emu-intro id="sec-intro">` clause, and its `##`/`###` sections
+become unnumbered subclauses of the Introduction. Nothing is taken from the
+upstream `README.md`.
 
 ## Building locally
 
