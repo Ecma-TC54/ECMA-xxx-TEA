@@ -8,6 +8,7 @@
       <h1>Attestation</h1>
       <p>machine-readable statement containing facts, evidence, or testimony</p>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-authn">
       <h1>Authentication</h1>
       <p><strong><dfn id="authn">authn</dfn></strong></p>
@@ -61,11 +62,6 @@
       <p>JSON document served at <code>/.well-known/tea</code> on the host named by the domain name of a TEI, listing the TEA server endpoints for that domain and the API versions they support</p>
     </emu-clause>
 
-    <emu-clause id="sec-terms-and-definitions-ean-code">
-      <h1><dfn variants="EAN,EAN codes,UPC">UPC or EAN code</dfn></h1>
-      <p>unique number and barcode used primarily in retail and trade</p>
-    </emu-clause>
-
     <emu-clause id="sec-terms-and-definitions-product">
       <h1>Product</h1>
       <p>item sold, distributed or otherwise delivered under one name</p>
@@ -106,10 +102,14 @@
         <p>The domain name of a TEI is used to locate the TEA server; see Clause <emu-xref href="#sec-discovery"></emu-xref>.</p>
       </emu-note>
     </emu-clause>
+
     <emu-clause id="sec-terms-and-definitions-vendor">
       <h1>Vendor</h1>
       <p>party that publishes TEIs for its Product Releases</p>
-      <p>Note 1 to entry: A vendor can be a commercial company or an open source project.</p>
+
+      <emu-note>
+        <p>A vendor can be a commercial company or an open source project.</p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-vex">
@@ -147,6 +147,14 @@
               <td>Common Security Advisory Framework, an OASIS standard for machine-readable security advisories</td>
             </tr>
             <tr>
+              <th>EAN</th>
+              <td>International Article Number (formerly European Article Number); an EAN-13 or EAN-8 number is a GTIN of 13 or 8 digits</td>
+            </tr>
+            <tr>
+              <th>GTIN</th>
+              <td>Global Trade Item Number, the GS1 identification key for trade items, of 8, 12, 13 or 14 digits</td>
+            </tr>
+            <tr>
               <th>SBOM</th>
               <td>Software bill of materials</td>
             </tr>
@@ -157,6 +165,10 @@
             <tr>
               <th>TEI</th>
               <td>Transparency Exchange Identifier</td>
+            </tr>
+            <tr>
+              <th>UPC</th>
+              <td>Universal Product Code; a UPC-A number is a GTIN of 12 digits</td>
             </tr>
             <tr>
               <th>UUID</th>
