@@ -46,12 +46,12 @@ const TEA_INTRODUCTION = "ecma-doc/introduction.md";
 // [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs so unrelated
 // chapters can use the same heading text without collision.
 const NARRATIVE_DOCS = [
-  ["api-flow/consumer.md", "flow-consumer"],
-  ["tea-product/tea-product.md", "tea-product"],
-  ["tea-product/tea-product-release.md", "tea-product-release"],
-  ["tea-component/tea-component.md", "tea-component"],
-  ["tea-component/tea-release.md", "tea-release"],
-  ["tea-collection/tea-collection.md", "tea-collection"],
+  ["ecma-doc/narrative/consumer.md", "flow-consumer"],
+  ["ecma-doc/narrative/tea-product.md", "tea-product"],
+  ["ecma-doc/narrative/tea-product-release.md", "tea-product-release"],
+  ["ecma-doc/narrative/tea-component.md", "tea-component"],
+  ["ecma-doc/narrative/tea-component-release.md", "tea-release"],
+  ["ecma-doc/narrative/tea-collection.md", "tea-collection"],
 ];
 
 // Normative chapters, each a top-level clause between the front matter and
