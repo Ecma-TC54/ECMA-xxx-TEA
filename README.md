@@ -92,9 +92,9 @@ const NARRATIVE_DOCS = [
 ];
 
 const NORMATIVE_DOCS = [
-  ["discovery/readme.md", "discovery", "sec-discovery"],
-  ["auth/readme.md", "auth", "sec-authentication", { normativeOptional: true }],
-  ["doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
+  ["ecma-doc/discovery.md", "discovery", "sec-discovery"],
+  ["ecma-doc/authentication.md", "auth", "sec-authentication", { normativeOptional: true }],
+  ["ecma-doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
 ];
 ```
 
