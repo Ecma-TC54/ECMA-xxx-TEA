@@ -103,10 +103,13 @@ const NORMATIVE_DOCS = [
   filesystem or alphabetical order.
 - **`idPrefix` gives stable, collision-free clause IDs.** Each Markdown
   heading becomes an `<emu-clause>` whose ID is
-  `sec-<idPrefix>-<n>-<slug-of-heading>` (the `<n>` is a per-document counter).
-  The prefix namespaces the IDs so two chapters can use the same heading text
-  (e.g. "Overview") without producing duplicate IDs, and so that
-  cross-references and deep links stay stable across rebuilds.
+  `sec-<idPrefix>-<slug-of-heading>`, with a `-1`, `-2`, ... suffix if the
+  same slug repeats within the document. The prefix namespaces the IDs so two
+  chapters can use the same heading text (e.g. "Overview") without producing
+  duplicate IDs. An ID changes only when its own heading is reworded, not when
+  headings are added or removed around it. The earlier, position-numbered form
+  `sec-<idPrefix>-<n>-<slug-of-heading>` is kept as an `oldids` alias, so
+  links to earlier drafts still resolve.
 - **`normativeOptional` labels a chapter "Normative Optional".** The chapter's
   top clause gets ecmarkup's `normative-optional` attribute: its requirements
   apply only to implementations that provide the feature (authentication is
