@@ -58,8 +58,13 @@
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-discovery-document">
-      <h1>Discovery document</h1>
+      <h1><dfn id="dfn-discovery-document" variants="Discovery document">discovery document</dfn></h1>
       <p>JSON document served at <code>/.well-known/tea</code> on the host named by the domain name of a TEI, listing the TEA server endpoints for that domain and the API versions they support</p>
+    </emu-clause>
+
+    <emu-clause id="sec-terms-and-definitions-ean-code">
+      <h1><dfn variants="EAN,EAN codes,UPC">UPC or EAN code</dfn></h1>
+      <p>unique number and barcode used primarily in retail and trade</p>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-product">
@@ -70,17 +75,29 @@
     <emu-clause id="sec-terms-and-definitions-product-release">
       <h1>Product Release</h1>
       <p>specific version of a Product that can be acquired or downloaded</p>
+
+      <emu-note>
+        <p>A TEI resolves to one or more Product Releases.</p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-sbom">
       <h1>Software bill of materials</h1>
       <p><strong>SBOM</strong></p>
       <p>structured inventory of the software components of a product, with their versions, identifiers and dependencies</p>
+
+      <emu-note>
+        <p>CycloneDX, specified in ECMA-424, is one format for SBOMs.</p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-tea-artefact">
       <h1>TEA Artifact</h1>
       <p>security-related document, such as an SBOM, a VEX document or an attestation, published in one or more formats and identified by a UUID and a version</p>
+
+      <emu-note>
+        <p>A TEA Artifact can be referenced by several Collections.</p>
+      </emu-note>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-tea-client">
@@ -99,7 +116,7 @@
       <p>URI of the form <code>tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code> that identifies one or more Product Releases</p>
 
       <emu-note>
-        <p>The domain name of a TEI is used to locate the TEA server; see Clause <emu-xref href="#sec-discovery"></emu-xref>.</p>
+        <p>The domain name of a TEI is used to locate the TEA server; see Clause <emu-xref href="#sec-tei"></emu-xref>.</p>
       </emu-note>
     </emu-clause>
 
