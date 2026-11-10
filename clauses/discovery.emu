@@ -274,12 +274,6 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
   <emu-clause id="sec-well-known-response">
     <h1>well-known response</h1>
 
-    <emu-note type="editor">
-      <p>The following sentence belongs… somewhere for sure. but probably not here?</p>
-
-      <p>The "tea" well-known URI is registered with IANA.</p>
-    </emu-note>
-
     <p>
       Servers shall not locate the actual TEA service endpoint at the
       <code>/.well-known/tea</code> URI. This URI is reserved for the TEA
