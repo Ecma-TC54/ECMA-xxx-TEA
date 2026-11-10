@@ -27,7 +27,7 @@
   date: 2026-12-08
 </pre>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/0x00-header.html"></emu-import>
+<emu-import href="./header.emu"></emu-import>
 
 <emu-intro id="sec-intro">
   <h1>Introduction</h1>
@@ -35,13 +35,13 @@
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu varius nisl. Fusce quis mauris metus. Cras eleifend mollis nisi. In ac egestas diam. Praesent posuere, ex ut feugiat finibus, odio lacus euismod libero, at ultricies nisl lorem id ante. Nam vitae felis feugiat, mattis lorem nec, convallis justo. Suspendisse potenti. Morbi non mattis risus. Quisque ut aliquam purus, eu mollis risus. Sed condimentum sed massa quis feugiat. Nam tincidunt facilisis congue. Vestibulum suscipit augue eget sollicitudin convallis. Aliquam egestas, ipsum ac vestibulum vulputate, magna diam lobortis libero, non maximus sem lectus nec tortor. Nulla purus metus, cursus id ipsum eget, volutpat maximus lorem. Vivamus efficitur pretium vestibulum. Curabitur id magna finibus mi posuere rutrum ut id dui.</p>
 </emu-intro>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/0x20-scope.html"></emu-import>
+<emu-import href="./cope.emu"></emu-import>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/0x22-normative-references.html"></emu-import>
+<emu-import href="./normative-references.emu"></emu-import>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/0x23-terms-and-definitions.html"></emu-import>
+<emu-import href="./terms-and-definitions.emu"></emu-import>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/0x21-conformance.html"></emu-import>
+<emu-import href="./conformance.emu"></emu-import>
 
 <emu-import href="./discovery.emu"></emu-import>
 <emu-import href="./authentication.emu"></emu-import>
@@ -6968,7 +6968,7 @@ sequenceDiagram
   </emu-annex>
 </emu-annex>
 
-<emu-import href="../../ECMA-xxx-TEA/excerpts/1x10-bibliography.html"></emu-import>
-<emu-import href="../../ECMA-xxx-TEA/excerpts/1x20-colophon.html"></emu-import>
+<emu-import href="./bibliography.emu"></emu-import>
+<emu-import href="./colophon.emu"></emu-import>
 </body>
 </html>
