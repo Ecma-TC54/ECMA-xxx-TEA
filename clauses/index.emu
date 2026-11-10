@@ -30,9 +30,38 @@
 <emu-import href="./header.emu"></emu-import>
 
 <emu-intro id="sec-intro">
-  <h1>Introduction</h1>
+<h1>Introduction</h1>
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu varius nisl. Fusce quis mauris metus. Cras eleifend mollis nisi. In ac egestas diam. Praesent posuere, ex ut feugiat finibus, odio lacus euismod libero, at ultricies nisl lorem id ante. Nam vitae felis feugiat, mattis lorem nec, convallis justo. Suspendisse potenti. Morbi non mattis risus. Quisque ut aliquam purus, eu mollis risus. Sed condimentum sed massa quis feugiat. Nam tincidunt facilisis congue. Vestibulum suscipit augue eget sollicitudin convallis. Aliquam egestas, ipsum ac vestibulum vulputate, magna diam lobortis libero, non maximus sem lectus nec tortor. Nulla purus metus, cursus id ipsum eget, volutpat maximus lorem. Vivamus efficitur pretium vestibulum. Curabitur id magna finibus mi posuere rutrum ut id dui.</p>
+<p>The TEA API is created to support automation of the software supply chain. Upstream
+vendors and open source projects can use this standard to keep downstream consumers
+up to date with transparency artefacts such as, but not limited to, bill of materials,
+VEX files, attestations and much more.
+
+This specification defines a standard, format agnostic, API for the exchange of
+product related artefacts, like BOMs, between systems.
+</p>
+
+<p>The TEA Consumer API is a read-only interface for retrieving and validating transparency data.
+
+A TEA client needs to support TEA discovery using the TEI identifier,
+using DNS to find a set of TEA services. Discovery can be based on
+existing product identifiers instead of creating new ones.
+
+The API provides access to:
+<ul>
+<li>Products and product releases
+<li>Components and component releases
+<li>Collections
+<li>Artefacts
+<li>Common Lifecycle Events documents (CLE)
+<li>Compliance-document identifiers and related metadata
+</ul>
+</p>
+
+<p>
+The TEA Consumer API is broader than a simple product/component lookup API. It covers release history, collections, artefacts,
+lifecycle data, discovery, and compliance-document-aware identifiers.
+</p>
 </emu-intro>
 
 <emu-import href="./cope.emu"></emu-import>
