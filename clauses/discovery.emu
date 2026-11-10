@@ -189,12 +189,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
   </emu-clause>
 
   <emu-clause id="sec-client-discovery-endpoint">
-    <h1>Discovery document consumption</h1>
-
-    <emu-note type="editor">
-      i'm concerned the regular references to "discovery document" regarding a
-      document that is not a response from /discovery will lead to confusion
-    </emu-note>
+    <h1>/.well-known discovery document consumption</h1>
 
     <p>
       A client shall choose an endpoint from the discovery document which lists
