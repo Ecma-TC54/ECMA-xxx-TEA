@@ -146,24 +146,11 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     <h1>TEI resolution</h1>
 
     <p>
-      A TEA client can initiate discovery of product transparency exchange
-      information by resolving the <code>&lt;domain-name&gt;</code> component
+      A TEA client can initiate discovery of TEA servers
+      location by resolving the <code>&lt;domain-name&gt;</code> component
       of a TEI to a DNS query and subsequent HTTP request. A client shall
-      consider <code>A</code>, <code>AAAA</code> and <code>CNAME</code>
-      records.
+      follow HTTP DNS resolution.
     </p>
-
-    <emu-note type="editor">
-      In the above paragraph, having the specific records as a requirement
-      (the sentence with "shall") seems out of place without specifying
-      further details. In the original text it's in the passive voice, so it
-      needs to be rewritten regardless. I recommend removing it altogether.
-    </emu-note>
-
-    <emu-note type="editor">
-      I modified the examples in this clause so they would match an earlier
-      example as well as each other.
-    </emu-note>
 
     <emu-example>
       <p>
