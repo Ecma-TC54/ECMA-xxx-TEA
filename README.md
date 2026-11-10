@@ -15,156 +15,40 @@ the specification as an Ecma International standard, it will be renamed to
 
 ## How this specification is built
 
-The normative source material is **not** authored in this repository. It lives
-in the OWASP/CycloneDX TEA source repository:
+The API clause and JSON Schema annex are automatically generated from the machine-readable source at
 
 > <https://github.com/CycloneDX/transparency-exchange-api>
 
-Four things are pulled from there at build time (see
-[What gets pulled from the TEA source](#what-gets-pulled-from-the-tea-source)
-for the exact details):
+Upon running `npm run build`, the following actions take place for both source files:
 
-- `spec/openapi.yaml` — the API surface and the data model are generated from it.
-- Two curated, ordered lists of Markdown files — the normative Discovery,
-  Authentication and UUID Scope and Stability chapters, and the informative
-  narrative.
-- `discovery/tea-well-known.schema.json` — rendered as a normative annex.
-- `ecma-doc/introduction.md` — used in full as the spec's Introduction.
+- the file is fetched from the above GitHub repo
+- it's saved to clauses/spec
+- it's then read to generate the appropriate .emu file
 
-This repository owns the **publication pipeline**: it converts those sources
-into an [Ecmarkup](https://github.com/tc39/ecmarkup) document and renders it to
-HTML and PDF using the same toolchain TC54 already uses for ECMA-424.
+Then, ecmarkup runs using spec.html as an entry file and compiled to out/
 
-```
-CycloneDX/transparency-exchange-api  (Markdown + OpenAPI)
-        │  fetched by index.js
-        ▼
-   spec.html  (generated Ecmarkup source, committed)
-        │  ecmarkup
-        ▼
-   out/  (single-page + multipage HTML)
-        │  PrinceXML (ghcr.io/ecma-tc54/princexml in CI)
-        ▼
-   out/spec.pdf
-```
+Generated content is not committed to the repository.
+
+There is an option to alternatively fetch these files from a local clone of the repository, running
+`npm run build-local`
 
 ### Layout
 
-| Path | Purpose |
-|---|---|
-| `index.js` | Fetches TEA sources and assembles `spec.html`. |
-| `lib/md-to-emu.js` | Markdown → nested `<emu-clause>` conversion. |
-| `lib/openapi-to-emu.js` | OpenAPI → API-surface and data-model clauses. |
-| `lib/json-schema-to-emu.js` | JSON Schema → well-known discovery annex. |
-| `excerpts/` | Hand-authored front/back matter (header, scope, conformance, references, terms, bibliography, colophon). |
-| `spec.html` | Generated Ecmarkup source, committed for reviewer diff-ability. |
+| Path                        | Purpose                                        |
+|-----------------------------|------------------------------------------------|
+| `index.js`                  | Fetches TEA sources and assembles `spec.html`. |
+| `lib/openapi-to-emu.js`     | OpenAPI → API-surface and data-model clauses.  |
+| `lib/json-schema-to-emu.js` | JSON Schema → well-known discovery annex.      |
+| `clauses/`                  | Clauses for the Ecma Standard.                 |
+| `spec.html`                 | Entry file for ecmarkup compilation.           |
 
 ## What gets pulled from the TEA source
 
-All three inputs are fetched from
+Machine-readable inputs are fetched from
 `https://raw.githubusercontent.com/CycloneDX/transparency-exchange-api/<ref>/<path>`.
 The `<ref>` is set by `TEA_SOURCE_REF` in `index.js` and currently tracks
 `main` (there is a `TODO` to pin it to a tag or commit before the first
-publication build, for reproducibility). Fetched files are cached under
-`tea-source/` (git-ignored) so repeated builds don't re-download.
-
-### Markdown chapters — explicit, ordered allowlists
-
-The Markdown chapters are **not** discovered by a glob and it is **not**
-"every `.md` file in the repo". They come from two hand-curated lists in
-`index.js`:
-
-- `NORMATIVE_DOCS` — normative chapters, each emitted as its own top-level
-  clause after the front matter and before the generated API. Each entry is
-  `[pathInTeaRepo, idPrefix, rootId, options]`.
-- `NARRATIVE_DOCS` — informative chapters, emitted inside the "Specification
-  narrative" informative annex, which follows the data model. Each entry is
-  `[pathInTeaRepo, idPrefix]`.
-
-```js
-const NARRATIVE_DOCS = [
-  ["ecma-doc/narrative/consumer.md", "flow-consumer"],
-  ["ecma-doc/narrative/tea-product.md", "tea-product"],
-  ["ecma-doc/narrative/tea-product-release.md", "tea-product-release"],
-  ["ecma-doc/narrative/tea-component.md", "tea-component"],
-  ["ecma-doc/narrative/tea-component-release.md", "tea-release"],
-  ["ecma-doc/narrative/tea-collection.md", "tea-collection"],
-];
-
-const NORMATIVE_DOCS = [
-  ["ecma-doc/discovery.md", "discovery", "sec-discovery"],
-  ["ecma-doc/authentication.md", "auth", "sec-authentication", { normativeOptional: true }],
-  ["ecma-doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
-];
-```
-
-- **Ordering is significant.** Chapters appear in the rendered specification
-  in exactly the order listed here — this is an editorial decision, not
-  filesystem or alphabetical order.
-- **`idPrefix` gives stable, collision-free clause IDs.** Each Markdown
-  heading becomes an `<emu-clause>` whose ID is
-  `sec-<idPrefix>-<slug-of-heading>`, with a `-1`, `-2`, ... suffix if the
-  same slug repeats within the document. The prefix namespaces the IDs so two
-  chapters can use the same heading text (e.g. "Overview") without producing
-  duplicate IDs. An ID changes only when its own heading is reworded, not when
-  headings are added or removed around it. The earlier, position-numbered form
-  `sec-<idPrefix>-<n>-<slug-of-heading>` is kept as an `oldids` alias, so
-  links to earlier drafts still resolve.
-- **`normativeOptional` labels a chapter "Normative Optional".** The chapter's
-  top clause gets ecmarkup's `normative-optional` attribute: its requirements
-  apply only to implementations that provide the feature (authentication is
-  optional for a TEA server). `NORMATIVE_OPTIONAL_TAGS` in `index.js` does the
-  same for API sections by OpenAPI tag (`TEA Authentication`, the `/token`
-  operation); the build warns if a listed tag is not in the OpenAPI document.
-- **`rootId` pins a normative chapter's ID.** The chapter's top clause (its
-  `#` heading) gets this fixed ID instead of a generated one, so the scope and
-  conformance excerpts can reference the chapter without depending on its
-  heading text. The generated ID is kept as an Ecmarkup `oldids` alias, so
-  existing deep links still resolve. The chapter's sub-clauses keep their
-  generated IDs.
-- **Conversion.** `lib/md-to-emu.js` maps Markdown headings (`#`…`######`) to
-  nested clauses, strips the leading table-of-contents bullet list that some
-  documents carry (Ecmarkup builds its own TOC), and drops code-fence language
-  hints that the bundled highlighter can't parse (e.g. `abnf`, `http`).
-  Markdown tables are wrapped in `<emu-table>`, since Ecmarkup numbers and
-  styles only those (borders, header shading, print wrapping). A paragraph
-  `Table: <title>` directly before a table (the Pandoc convention) becomes its
-  caption, rendered as "Table N: <title>"; without it the table is only
-  numbered. The caption may end in a Pandoc attribute block:
-  `Table: TEI types {#tbl-tei-types .informative}` gives the table the ID
-  `tbl-tei-types`, which `<emu-xref href="#tbl-tei-types">` can reference,
-  and renders it as "Table N (Informative): TEI types". Either attribute may
-  be used alone, and `Table: {.informative}` marks a table without a caption.
-  In-document links written against GitHub's heading anchors (e.g.
-  `[Requirements](#requirements)`) are rewritten to the generated clause IDs.
-- **References to normative chapter files become cross-references.** The
-  sources refer to each other by file path, as Markdown links
-  (`../auth/readme.md`) or as code (`` `doc/tea-uuid-scope.md` `` in the
-  OpenAPI descriptions). `index.js` maps each `NORMATIVE_DOCS` path to its
-  `rootId` and rewrites those references in the assembled document to
-  `<emu-xref>`s. Any remaining reference to a `.md` file is logged as a
-  warning, since it leads nowhere in the published specification.
-- **Mermaid diagrams are pre-rendered.** Each ```` ```mermaid ```` fence is
-  rendered to inline SVG at generate time by `lib/mermaid.js` (using
-  `@mermaid-js/mermaid-cli` and a headless Chrome through puppeteer) and
-  emitted as an `<emu-figure id="fig-<idPrefix>-<n>">`, with the diagram's
-  front-matter `title` as its caption and the source kept in an HTML comment
-  next to it. Static SVG is what both ecmarkup and PrinceXML can print;
-  client-side Mermaid would not survive the PDF step. The renderer uses the
-  `neutral` theme and disables HTML labels, so no `<foreignObject>` is
-  produced. Set `PUPPETEER_EXECUTABLE_PATH` to reuse an installed Chrome (CI
-  does this with the runner's `/usr/bin/google-chrome`); otherwise puppeteer
-  uses the browser it downloaded at `npm ci` time.
-- **Missing files degrade gracefully.** If a path 404s, the build logs a
-  warning and skips it rather than failing — so an upstream rename won't break
-  CI, but the affected chapter silently disappears until the list is updated.
-
-**Why a curated list and not a glob:** (1) chapter order in a standard is
-editorial; (2) the TEA repo contains Markdown that must *not* be published
-(e.g. `README.md`, contributor notes, implementation lists); and (3) stable
-clause IDs need the per-file `idPrefix`. The flip side: when the working group
-adds or renames a chapter upstream, **this list is the editorial control point
-that must be updated here** for the change to appear in the spec.
+publication build, for reproducibility).
 
 ### `spec/openapi.yaml` — generated API surface and data model
 
@@ -218,23 +102,13 @@ preserving named-schema identity) and emits two top-level clauses:
 (`<emu-annex … normative>`, `#sec-tea-well-known-schema`) immediately after
 the data model and before the informative "Specification narrative" annex.
 The imported JSON is emitted verbatim as the schema; the tables that follow
-summarise it, including item-level `description` and `examples`. Nested
+summarize it, including item-level `description` and `examples`. Nested
 `definitions` become child annexes (`#sec-tea-well-known-<name>`), also
-marked normative. Discovery's GitHub-relative Markdown link
-`[TEA Well-Known Schema](tea-well-known.schema.json)` is rewritten to an
-`<emu-xref>` to that annex, so the reference works in the published HTML and
-PDF while remaining a file link on GitHub.
+marked normative.
 
 The annex is generated from the same TEA source revision as the rest of the
 build. It is not a separately maintained copy of the schema. The dialect
 (JSON Schema draft-07 Core and Validation) is listed in Normative references.
-
-### `ecma-doc/introduction.md` — Introduction
-
-The whole file is imported as the spec's Introduction. Its level-1 heading
-becomes the `<emu-intro id="sec-intro">` clause, and its `##`/`###` sections
-become unnumbered subclauses of the Introduction. Nothing is taken from the
-upstream `README.md`.
 
 ## Building locally
 
@@ -258,9 +132,9 @@ watermark-free PDF (see `.github/workflows/build.yml`).
 
 ## Contributing
 
-- **Narrative or API changes** belong upstream in
+- **API changes** belong upstream in
   [CycloneDX/transparency-exchange-api](https://github.com/CycloneDX/transparency-exchange-api).
-- **Front/back matter, build tooling, and publication concerns** belong here.
+- **Front/back matter, build tooling, formal standard langauge, and publication concerns** belong here.
 
 Contributions are managed by TC54. We thank Ecma's TC39 for **Ecmarkup**, which
 TC54 has adopted for preparing and maintaining this specification.

@@ -5,7 +5,9 @@ test*.js
 aspell.txt
 
 # Fetched TEA source repository (populated by `npm run generate-spec`)
-tea-source/
+clauses/spec
+clauses/API.emu
+clauses/tea-well-known-schema.emu
 
 # lockfiles we don't use are ignored
 npm-shrinkwrap.json
