@@ -140,12 +140,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 </emu-clause>
 
 <emu-clause id="sec-client-requirements">
-  <h1>TEA client requirements</h1>
-
-  <emu-note type="editor">
-<!--    TODO new title-->
-    This might need a new title?
-  </emu-note>
+  <h1>TEA client requirements for discovery</h1>
 
   <emu-clause id="sec-tei-resolution">
     <h1>TEI resolution</h1>
