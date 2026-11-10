@@ -19,7 +19,8 @@
     <ul>
       <li>The scheme shall be <code>tei</code> in lowercase.</li>
       <li>The <code>domain-name</code> shall be a DNS name under the vendor's control and resolve to a web
-        server. The domain name shall not include a port number.</li>
+        server. The domain name shall not include a port number. The domain name shall be lowercase ASCII,
+        using A-labels for internationalized names;</li>
       <li>The <code>type</code> shall consist of lowercase ASCII letters and digits, and start with a letter.
         The type names the identifier scheme of the <code>unique-identifier</code>
         and shall be registered as described in
@@ -27,7 +28,13 @@
       <li>The <code>unique-identifier</code> shall be a single path segment in the syntax its <emu-xref href="#sec-tei-types">type</emu-xref> defines.
         The <code>unique-identifier</code> shall identify one or more product releases within the <code>domain-name</code>.
         It shall not contain <code>/</code>, either literally or percent-encoded as <code>%2F</code>.
-        Any other characters that are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits.</li>
+        Any other characters that are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits.
+        The unique identifier shall be formatted exactly as its registry entry defines it.
+        <emu-note>
+          <p>
+            For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.
+          </p>
+        </emu-note></li>
     </ul>
   </emu-clause>
 
@@ -98,27 +105,8 @@
 
   <emu-clause id="sec-tei-comparison">
     <h1>Identity and comparison</h1>
-
-    <p>A valid TEI conforms to the following requirements when being treated as
-      an identifier:</p>
-
-    <ul>
-      <li><p>The scheme <code>tei</code> shall be lowercase;</p></li>
-      <li><p>the domain name shall be lowercase ASCII, using A-labels for internationalized names;</p></li>
-      <li><p>the TEI type shall be lowercase;</p></li>
-      <li>
-        <p>the unique identifier shall be formatted exactly as its registry entry defines it;</p>
-        <emu-note>
-          <p>
-            For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.
-          </p>
-        </emu-note>
-      </li>
-      <li>characters that do not require percent-encoding shall not be encoded.</li>
-    </ul>
-
     <emu-example>
-      <p>The following TEIs are therefore all distinct:</p>
+      <p>The following TEIs are all distinct considering the syntax for a TEI:</p>
 
       <pre><code class="text">tei://example.com/uuid/62f2cf92-ae88-11f1-a698-1a52914d44b2
 tei://Example.com/uuid/62f2cf92-ae88-11f1-a698-1a52914d44b2
