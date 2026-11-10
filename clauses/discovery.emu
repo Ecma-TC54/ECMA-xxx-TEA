@@ -41,6 +41,7 @@
           </p>
         </emu-note></li>
     </ul>
+    <p>A client shall use a TEI exactly as received and shall not rewrite it.</p>
   </emu-clause>
 
   <emu-clause id="sec-tei-types">
@@ -145,10 +146,6 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 <!--    TODO new title-->
     This might need a new title?
   </emu-note>
-
-  <p>A client shall use a TEI exactly as received and shall not rewrite it.</p>
-
-  <emu-note type="editor">The above paragraph doesn't have a sensible place</emu-note>
 
   <emu-clause id="sec-tei-resolution">
     <h1>TEI resolution</h1>
