@@ -7,7 +7,12 @@
     codes, PURL and others. The TEI is used to find the artifacts needed for
     a given product through a discovery process to find the API server and
     a standardised API to retrieve documents and information about a specific release.
+    In short, TEI is a unique product identifier with built-in support for discovery of
+    one or more API servers for that product.
   </p>
+  <p>This section defines the TEI identifier and later describes how to use the TEI
+  for discovery.
+  </P>
 
   <emu-clause id="sec-tei-syntax">
     <h1>Syntax</h1>
@@ -130,18 +135,6 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       sequence of characters.
     </p>
 
-    <emu-note type="editor">
-      <p>
-        I think the distinction between identity and resolution needs to be
-        communicated in a clearer manner. Maybe by editing the paragraph below,
-        maybe something completely new. The below paragraph is not clear enough
-        on its own to be used.
-      </p>
-      <hr />
-      <p>This rule defines identity only.
-        Resolving a TEI to an API endpoint follows the rules below,
-        where the domain name is used as a DNS name and is therefore case-insensitive.</p>
-    </emu-note>
   </emu-clause>
 </emu-clause>
 
