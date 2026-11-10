@@ -4,7 +4,9 @@
   <p>
     The TEI, Transparency Exchange Identifier, is a globally unique release
     identifier based on DNS coupled with new or existing identifiers like EAN
-    codes, PURL and others.
+    codes, PURL and others. The TEI is used to find the artifacts needed for
+    a given product through a discovery process to find the API server and
+    a standardised API to retrieve documents and information about a specific release.
   </p>
 
   <emu-clause id="sec-tei-syntax">
