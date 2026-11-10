@@ -9,8 +9,8 @@
   </p>
   <ul>
     <li>Implement the operations defined in <emu-xref href="#sec-tea-api" title></emu-xref>, except those that this Standard makes optional for it.</li>
-    <li>Support the discovery of its API as defined in <emu-xref href="#sec-discovery">the Discovery chapter</emu-xref>.</li>
-    <li>Either require no authentication, following the rules for such servers in <emu-xref href="#sec-discovery">the Discovery chapter</emu-xref>, or require authentication for some or all of its objects and conform to <emu-xref href="#sec-authentication">the Authentication chapter</emu-xref>, which is normative optional.</li>
+    <li>Support the discovery of its API as defined in <emu-xref href="#sec-well-known-response" title></emu-xref>.</li>
+    <li>Conform to <emu-xref href="#sec-authentication" title></emu-xref> if it requires authentication for some or all of its objects.</li>
     <li>Assign TEA UUIDs with the uniqueness and stability defined in <emu-xref href="#sec-uuid-scope">the UUID Scope and Stability chapter</emu-xref>.</li>
     <li>Return payloads that conform to <emu-xref href="#sec-tea-data-model" title></emu-xref>.</li>
   </ul>
@@ -18,8 +18,8 @@
     A conformant TEA client shall:
   </p>
   <ul>
-    <li>Resolve Transparency Exchange Identifiers as defined in <emu-xref href="#sec-discovery">the Discovery chapter</emu-xref>.</li>
-    <li>Authenticate, where a TEA server requires it, as defined in <emu-xref href="#sec-authentication">the Authentication chapter</emu-xref>.</li>
+    <li>Resolve Transparency Exchange Identifiers as defined in <emu-xref href="#sec-tei-resolution" title></emu-xref>.</li>
+    <li>Authenticate, where a TEA server requires it, as defined in <emu-xref href="#sec-authentication" title></emu-xref>.</li>
     <li>Send requests that conform to <emu-xref href="#sec-tea-api" title></emu-xref>.</li>
   </ul>
   <p>
