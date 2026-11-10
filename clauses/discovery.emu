@@ -17,7 +17,7 @@
     <pre><code class="text">tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code></pre>
 
     <ul>
-      <li>The scheme shall be <code>tei</code>.</li>
+      <li>The scheme shall be <code>tei</code> in lowercase.</li>
       <li>The <code>domain-name</code> shall be a DNS name under the vendor's control and resolve to a web
         server. The domain name shall not include a port number.</li>
       <li>The <code>type</code> shall consist of lowercase ASCII letters and digits, and start with a letter.
