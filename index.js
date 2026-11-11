@@ -1,100 +1,51 @@
 #!/usr/bin/env node
-// Assembles spec.html by fetching the TEA source repository (Markdown + OpenAPI)
-// and stitching it together with the hand-authored excerpts/ files.
-//
-// Mirrors the ECMA-424 build model: the spec.html file is committed to the
-// repository as a generated artefact; running `npm run generate-spec`
-// regenerates it from upstream sources.
 
-import fs from "node:fs";
+/**
+ * This script generates the TEA API clause from the Open API yaml file on GitHub (or, alternatively, from a local clone
+ * of the GitHub Repo) as well as the well-known schema annex. Those files are ignored by Git.
+ * */
+import * as fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import beautify from "js-beautify";
-import { markdownToEmuClauses } from "./lib/md-to-emu.js";
 import { closeMermaidRenderer } from "./lib/mermaid.js";
 import { openApiToEmu } from "./lib/openapi-to-emu.js";
-import {
-  WELL_KNOWN_SOURCE_PATH,
-  jsonSchemaToEmuAnnex,
-  linkWellKnownSchema,
-} from "./lib/json-schema-to-emu.js";
+import { jsonSchemaToEmuAnnex } from "./lib/json-schema-to-emu.js";
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
+const OUTDIR = 'clauses';
 
-// TODO: pin TEA_SOURCE_REF to a tag or commit SHA before the first ECMA
-// publication build. Tracking `main` is acceptable for working-group review
-// drafts but is not reproducible: re-running the build at a later date may
-// produce different output. See discussion at
-// https://github.com/Ecma-TC54/ECMA-xxx-TEA/pull/<TBD>.
-const TEA_SOURCE_REPO = "CycloneDX/transparency-exchange-api";
+// TODO: create an npm run-script to generate content from a specific hash or tag to provide for reproducible builds.
+
+/**
+ * Suggested approach for reproducible builds: pin versions between Ecma and CycloneDX repos, using the `npm version`
+ * command. Use an environment variable indicating that a build should be generated from the current version. Use
+ * the url https://github.com/CycloneDX/transparency-exchange-api/tree/${CURRENT_TAG}
+ * */
+
+const TEA_REPO = "transparency-exchange-api";
 const TEA_SOURCE_REF = "main";
-const RAW_BASE = `https://raw.githubusercontent.com/${TEA_SOURCE_REPO}/${TEA_SOURCE_REF}`;
+const CYCLONEDX_TEA_GITHUB = `https://raw.githubusercontent.com/CycloneDX/${TEA_REPO}/${TEA_SOURCE_REF}`;
 
-// Cache fetched TEA sources here so subsequent builds don't re-download.
-const CACHE_DIR = path.join(HERE, "tea-source");
-const OUT_FILE = path.join(HERE, "spec.html");
+const fetchFilePaths = {
+  "Open API": {
+    local: path.join('..', TEA_REPO, "spec", "openapi.yaml"),
+    remote: `${CYCLONEDX_TEA_GITHUB}/spec/openapi.yaml`,
+    destination: path.join(OUTDIR, "spec", "openapi.yaml")
+  },
+  "JSON Schema": {
+    local: path.join('..', TEA_REPO, "discovery", "tea-well-known.schema.json"),
+    remote: `${CYCLONEDX_TEA_GITHUB}/discovery/tea-well-known.schema.json`,
+    destination: path.join(OUTDIR, "spec", "tea-well-known.schema.json")
+  }
+};
 
-// Paths inside the TEA source repository, relative to its root.
-const TEA_OPENAPI = "spec/openapi.yaml";
-
-// The Introduction, imported in full. Its level-1 heading becomes the
-// <emu-intro> itself and its sections become unnumbered subclauses.
-const TEA_INTRODUCTION = "ecma-doc/introduction.md";
-
-// Informative narrative chapters, emitted in this order inside the
-// "Specification narrative" informative annex. Each entry is
-// [pathInTeaRepo, idPrefix]. The idPrefix namespaces clause IDs so unrelated
-// chapters can use the same heading text without collision.
-const NARRATIVE_DOCS = [
-  ["ecma-doc/narrative/consumer.md", "flow-consumer"],
-  ["ecma-doc/narrative/tea-product.md", "tea-product"],
-  ["ecma-doc/narrative/tea-product-release.md", "tea-product-release"],
-  ["ecma-doc/narrative/tea-component.md", "tea-component"],
-  ["ecma-doc/narrative/tea-component-release.md", "tea-release"],
-  ["ecma-doc/narrative/tea-collection.md", "tea-collection"],
-];
-
-// Normative chapters, each a top-level clause between the front matter and
-// the generated API, in this order. Each entry is [pathInTeaRepo, idPrefix,
-// rootId, options]. rootId is the fixed ID of the chapter's top clause, which
-// the scope and conformance excerpts reference. options.normativeOptional
-// marks a chapter whose requirements apply only to implementations that
-// provide its feature (authentication is optional for a TEA server).
-const NORMATIVE_DOCS = [
-  ["ecma-doc/discovery.md", "discovery", "sec-discovery"],
-  ["ecma-doc/authentication.md", "auth", "sec-authentication", { normativeOptional: true }],
-  ["ecma-doc/tea-uuid-scope.md", "uuid-scope", "sec-uuid-scope"],
-];
-
-// OpenAPI tags whose operations are normative optional: the `/token` operation
-// is implemented only by servers that require authentication.
 const NORMATIVE_OPTIONAL_TAGS = ["TEA Authentication"];
 
-// Chapter IDs by TEA source path. The sources refer to each other by file path,
-// as Markdown links ("../auth/readme.md", "/discovery/readme.md") or as code
-// ("see `doc/tea-uuid-scope.md`" in the OpenAPI descriptions); in the spec
-// those become cross-references to the chapter.
-const CHAPTER_IDS = new Map(NORMATIVE_DOCS.map(([rel, , rootId]) => [rel, rootId]));
-
-function linkChapterReferences(html) {
-  for (const [rel, id] of CHAPTER_IDS) {
-    const file = `(?:\\.{0,2}/)*${rel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`;
-    html = html
-      .replace(new RegExp(`<a href="${file}"[^>]*>([\\s\\S]*?)</a>`, "g"), `<emu-xref href="#${id}">$1</emu-xref>`)
-      .replace(new RegExp(`<code>${file}</code>`, "g"), `<emu-xref href="#${id}" title></emu-xref>`);
-  }
-  for (const m of html.matchAll(/href="([^"#:]*\.md(?:#[^"]*)?)"|<code>([^<\s]*\.md)<\/code>/g)) {
-    console.warn(`unresolved reference to TEA source file: ${m[1] || m[2]}`);
-  }
-  return html;
-}
-
-// Prince sizes a table column to at least its longest unbreakable run of text,
-// whatever `overflow-wrap` says, so a long opaque token in a cell (a digest, a
-// Base64URL identifier, an encoded query string) pushes the table past the
-// printed page. Offer break points inside such runs in table code: after "?",
-// "&", "=" and ".", then every 16 characters where that is not enough. <wbr>
-// renders as nothing and is not copied with the text.
+/**
+ * Prince sizes a table column to at least its longest unbreakable run of text, whatever `overflow-wrap` says, so a long
+ * opaque token in a cell (a digest, a Base64URL identifier, an encoded query string) pushes the table past the printed
+ * page. Offer break points inside such runs in table code: after "?", "&", "=" and ".", then every 16 characters where
+ * that is not enough. <wbr> renders as nothing and is not copied with the text.
+ * */
 const LONG_RUN = /(?:&[#a-z0-9]+;|[^\s/&<-]){32,}/gi;
 const RUN_CHUNK = /(?:&[#a-z0-9]+;|.){1,16}/gi;
 
@@ -109,98 +60,100 @@ function breakLongTableCode(html) {
       open + text.replace(LONG_RUN, breakRun) + close));
 }
 
-async function fetchTeaFile(relPath) {
-  const cached = path.join(CACHE_DIR, relPath);
-  if (fs.existsSync(cached)) return fs.readFileSync(cached, "utf-8");
-  const url = `${RAW_BASE}/${relPath}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
-  }
-  const text = await res.text();
-  fs.mkdirSync(path.dirname(cached), { recursive: true });
-  fs.writeFileSync(cached, text);
-  return text;
-}
+/**
+ * Fetches source from GitHub repo owned by CycloneDX org
+ * @param {"Open API"|"JSON Schema"} clause
+ * @returns {string}
+ * */
+async function fetchCycloneDXSource(clause) {
+  console.log(`Removing previously fetched ${clause} file, if any . . .`)
 
-function readExcerpt(name) {
-  return fs.readFileSync(path.join(HERE, "excerpts", name), "utf-8");
-}
-
-async function importMarkdown(rel, idPrefix, options) {
-  let body;
-  try {
-    body = await fetchTeaFile(rel);
-  } catch (err) {
-    console.warn(`skipping ${rel}: ${err.message}`);
-    return "";
+  if (process.env.TEA_ENV === 'localdev') {
+    return fs.rm(fetchFilePaths[clause].destination, {force: true})
+      // .then(() => fs.readFile(fetchFilePaths[clause].local, {encoding: 'utf-8'}));
+      .then(() => fs.link(fetchFilePaths[clause].local, fetchFilePaths[clause].destination))
+      .then(() => fs.readFile(fetchFilePaths[clause].destination, {encoding: 'utf-8'}));
   }
-  return `<!-- imported from ${TEA_SOURCE_REPO}@${TEA_SOURCE_REF}:${rel} -->\n`
-    + await markdownToEmuClauses(body, idPrefix, options);
+
+  return fs.rm(fetchFilePaths[clause].destination, {force: true})
+    .then(() => fetch(fetchFilePaths[clause].remote).then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${fetchFilePaths[clause].remote}: ${res.status} ${res.statusText}`);
+      }
+
+      return res.text();
+    }))
+    .then((text) => fs.writeFile(fetchFilePaths[clause].destination, text)
+      .then(() => text)
+    )
 }
 
 async function build() {
-  // Refresh the source cache each run so we pick up upstream changes.
-  if (fs.existsSync(CACHE_DIR)) fs.rmSync(CACHE_DIR, { recursive: true, force: true });
-
-  let html = "";
-
-  html += readExcerpt("0x00-header.html") + "\n";
-
-  // ecmarkup requires an Introduction with this ID; keep a placeholder if the
-  // source cannot be fetched.
-  html += await importMarkdown(TEA_INTRODUCTION, "intro", { rootId: "sec-intro", element: "emu-intro" })
-    || `<emu-intro id="sec-intro">\n<h1>Introduction</h1>\n`
-      + "<p>The Transparency Exchange API (TEA) standardises the exchange of supply-chain transparency artefacts.</p>\n"
-      + "</emu-intro>\n";
-
-  // Front matter (skeletons authored as excerpts).
-  html += readExcerpt("0x20-scope.html") + "\n";
-  html += readExcerpt("0x21-conformance.html") + "\n";
-  html += readExcerpt("0x22-normative-references.html") + "\n";
-  html += readExcerpt("0x23-terms-and-definitions.html") + "\n";
-
-  // Normative chapters, each a top-level clause.
-  for (const [rel, idPrefix, rootId, options] of NORMATIVE_DOCS) {
-    html += await importMarkdown(rel, idPrefix, { rootId, ...options });
+  if (process.env.TEA_ENV === 'localdev') {
+    const res = await fetch('https://raw.githubusercontent.com');
+    if (!res.ok) {
+      throw new Error('GitHub is down, failing before any locally saved data is deleted.');
+    }
   }
 
-  // Generated API surface + data model follow the normative chapters.
-  const openapiYaml = await fetchTeaFile(TEA_OPENAPI);
-  html += await openApiToEmu(openapiYaml, { normativeOptionalTags: NORMATIVE_OPTIONAL_TAGS });
+  return fs.mkdir(path.join(OUTDIR, "spec"), {recursive: true})
+    .then(() => {
+      console.log('Fetching and reading OpenAPI . . .');
 
-  // Normative annex: the .well-known/tea JSON Schema, imported from the same
-  // TEA source revision as the Discovery chapter that references it.
-  try {
-    const wellKnownText = await fetchTeaFile(WELL_KNOWN_SOURCE_PATH);
-    html += jsonSchemaToEmuAnnex(JSON.parse(wellKnownText), { sourceJson: wellKnownText });
-  } catch (err) {
-    console.warn(`skipping ${WELL_KNOWN_SOURCE_PATH}: ${err.message}`);
-  }
+      return fetchCycloneDXSource("Open API");
+    })
+    .then((apiYaml) => {
+      console.log('Converting OpenAPI yaml to ecmarkup . . .');
 
-  // Informative narrative, as an annex after the data model (ISO places
-  // informative material in the Introduction or in informative annexes).
-  html += `<emu-annex id="sec-tea-narrative">\n<h1>Specification narrative</h1>\n`;
-  html += "<p>The following sections are derived from the working group's authoring notes maintained as Markdown in the source repository.</p>\n";
-  for (const [rel, idPrefix] of NARRATIVE_DOCS) {
-    html += await importMarkdown(rel, idPrefix, { element: "emu-annex" });
-  }
-  html += "</emu-annex>\n";
-  await closeMermaidRenderer();
+      return openApiToEmu(apiYaml, {normativeOptionalTags: NORMATIVE_OPTIONAL_TAGS});
+    })
+    .then((markup) => {
+      console.log('Breaking up long OpenAPI tables . . .');
 
-  // Back matter.
-  html += readExcerpt("1x10-bibliography.html") + "\n";
-  html += readExcerpt("1x20-colophon.html") + "\n";
+      return breakLongTableCode(markup);
+    })
+    .then((markup) => {
+      console.log('Beautifying OpenAPI markup . . .');
 
-  html = linkWellKnownSchema(linkChapterReferences(html));
-  html = breakLongTableCode(html);
+      return safelyBeautifyMarkup(markup);
+    })
+    .then((apiMarkup) => {
+      console.log('Writing OpenAPI clause . . .');
 
-  // js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-
-  // printing and restore afterwards.
+      return fs.writeFile(path.join(OUTDIR, 'API.emu'), apiMarkup)
+        .then(() => console.log(`Wrote OpenAPI clause, ${apiMarkup.length} bytes.`));
+    })
+    .then(() => {
+      console.log('Fetching and reading well-known JSON schema . . .');
+
+      return fetchCycloneDXSource("JSON Schema");
+    })
+    .then((wellknownJson) => {
+      console.log('Converting well-known JSON schema to ecmarkup . . .');
+
+      return jsonSchemaToEmuAnnex(JSON.parse(wellknownJson))
+    })
+    .then((markup) => {
+      console.log('Beautifying JSON schema markup . . .');
+
+      return safelyBeautifyMarkup(markup)
+    })
+    .then((schemaMarkup) => {
+      console.log('Writing JSON schema annex . . .');
+
+      return fs.writeFile(path.join(OUTDIR, 'tea-well-known-schema.emu'), schemaMarkup)
+        .then(() => console.log(`Wrote JSON schema annex, ${schemaMarkup.length} bytes.`));
+    })
+}
+
+/**
+ * js-beautify will mangle <pre>/<code>/<script>. Stash them before pretty-printing and restore afterwards.
+ */
+function safelyBeautifyMarkup(markup) {
   const TAGS_TO_SKIP = ["pre", "code", "script", "svg"];
   const placeholders = {};
   let counter = 0;
-  let working = html;
+  let working = markup;
   for (const tag of TAGS_TO_SKIP) {
     const re = new RegExp(`<${tag}[^>]*?>[\\s\\S]*?<\\/${tag}>`, "gi");
     working = working.replace(re, m => {
@@ -218,12 +171,12 @@ async function build() {
   });
   for (const [k, v] of Object.entries(placeholders)) pretty = pretty.replace(k, v);
 
-  fs.writeFileSync(OUT_FILE, pretty);
-  console.log(`wrote ${OUT_FILE} (${pretty.length} bytes)`);
+  return pretty;
 }
 
-build().catch(async err => {
+build().catch(err => {
   console.error(err);
-  await closeMermaidRenderer().catch(() => {});
-  process.exit(1);
+  return closeMermaidRenderer()
+    .catch(() => {})
+    .then(() => process.exit(1));
 });
