@@ -189,12 +189,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
   </emu-clause>
 
   <emu-clause id="sec-client-discovery-endpoint">
-    <h1>Discovery document consumption</h1>
-
-    <emu-note type="editor">
-      i'm concerned the regular references to "discovery document" regarding a
-      document that is not a response from /discovery will lead to confusion
-    </emu-note>
+    <h1>/.well-known discovery document consumption</h1>
 
     <p>
       A client shall choose an endpoint from the discovery document which lists
@@ -279,12 +274,6 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
   <emu-clause id="sec-well-known-response">
     <h1>well-known response</h1>
 
-    <emu-note type="editor">
-      <p>The following sentence belongs… somewhere for sure. but probably not here?</p>
-
-      <p>The "tea" well-known URI is registered with IANA.</p>
-    </emu-note>
-
     <p>
       Servers shall not locate the actual TEA service endpoint at the
       <code>/.well-known/tea</code> URI. This URI is reserved for the TEA
@@ -362,29 +351,5 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     </emu-note>
   </emu-clause>
 
-  <emu-clause id="sec-discovery-info">
-    <h1><code>/discovery</code> response</h1>
-
-    <emu-note type="editor">
-      I do not believe there is any text in discovery.md about the server
-      /discovery response that is not covered by the API documentation. I think
-      this entire clause should be deleted or extremely carefully written to
-      reference <emu-xref href="#sec-tea-api-tea-discovery" title></emu-xref>
-      and no substantive text.
-    </emu-note>
-    <emu-note type="editor">
-      <p>
-        I'm not entirely convinced this paragraph improves clarity, especially
-        coming before the auth clause.
-      </p>
-      <hr>
-      <p>The discovery endpoint is a part of the TEA OpenAPI specification. Unlike <code>/token</code>,
-        <code>/discovery</code> is required on a conforming TEA API base: a conforming server that exposes
-        a given API version shall implement it.</p>
-    </emu-note>
-
-    <p>
-      A TEA server shall provide a non-empty JSON array containing one or more <emu-xref href="#sec-tea-schema-discovery-info" title></emu-xref> objects in response to a valid request to the <code>/discovery</code> endpoint.
-    </p>
   </emu-clause>
 </emu-clause>
