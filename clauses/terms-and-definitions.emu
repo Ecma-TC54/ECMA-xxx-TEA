@@ -1,5 +1,6 @@
 <emu-clause id="sec-terms">
   <h1>Terms and definitions</h1>
+
   <emu-clause id="sec-terms-and-definitions">
     <h1>Terms</h1>
     <p>For the purposes of this Standard, the following terms and definitions apply:</p>
@@ -144,63 +145,63 @@
     <h1>Acronyms and abbreviations</h1>
 
     <p>For the purposes of this Standard, the following abbreviations apply:</p>
-      <emu-table>
-        <emu-caption>Acronyms & abbreviations</emu-caption>
-        <table>
+    <emu-table>
+      <emu-caption>Acronyms & abbreviations</emu-caption>
+      <table>
         <thead>
           <tr><th>Abbreviation</th><th>&nbsp;</th></tr>
         </thead>
           <tbody>
-            <tr>
-              <th>API</th>
-              <td>Application Programming Interface</td>
-            </tr>
-            <tr>
-              <th>CPE</th>
-              <td>Common Platform Enumeration, a naming scheme for IT products and platforms, usable as an identifier type</td>
-            </tr>
-            <tr>
-              <th>CSAF</th>
-              <td>Common Security Advisory Framework, an OASIS standard for machine-readable security advisories</td>
-            </tr>
-            <tr>
-              <th>EAN</th>
-              <td>International Article Number (formerly European Article Number); an EAN-13 or EAN-8 number is a GTIN of 13 or 8 digits</td>
-            </tr>
-            <tr>
-              <th>GTIN</th>
-              <td>Global Trade Item Number, the GS1 identification key for trade items, of 8, 12, 13 or 14 digits</td>
-            </tr>
-            <tr>
-              <th>SBOM</th>
-              <td>Software bill of materials</td>
-            </tr>
-            <tr>
-              <th>TEA</th>
-              <td>Transparency Exchange API</td>
-            </tr>
-            <tr>
-              <th>TEI</th>
-              <td>Transparency Exchange Identifier</td>
-            </tr>
-            <tr>
-              <th>UPC</th>
-              <td>Universal Product Code; a UPC-A number is a GTIN of 12 digits</td>
-            </tr>
-            <tr>
-              <th>UUID</th>
-              <td>Universally Unique Identifier</td>
-            </tr>
-            <tr>
-              <th>VDR</th>
-              <td>Vulnerability Disclosure Report</td>
-            </tr>
-            <tr>
-              <th>VEX</th>
-              <td>Vulnerability Exploitability eXchange</td>
-            </tr>
+        <tr>
+          <th>API</th>
+          <td>Application Programming Interface</td>
+        </tr>
+        <tr>
+          <th>CPE</th>
+          <td>Common Platform Enumeration, a naming scheme for IT products and platforms, usable as an identifier type</td>
+        </tr>
+        <tr>
+          <th>CSAF</th>
+          <td>Common Security Advisory Framework, an OASIS standard for machine-readable security advisories</td>
+        </tr>
+        <tr>
+          <th>EAN</th>
+          <td>International Article Number (formerly European Article Number); an EAN-13 or EAN-8 number is a GTIN of 13 or 8 digits</td>
+        </tr>
+        <tr>
+          <th>GTIN</th>
+          <td>Global Trade Item Number, the GS1 identification key for trade items, of 8, 12, 13 or 14 digits</td>
+        </tr>
+        <tr>
+          <th>SBOM</th>
+          <td>Software bill of materials</td>
+        </tr>
+        <tr>
+          <th>TEA</th>
+          <td>Transparency Exchange API</td>
+        </tr>
+        <tr>
+          <th>TEI</th>
+          <td>Transparency Exchange Identifier</td>
+        </tr>
+        <tr>
+          <th>UPC</th>
+          <td>Universal Product Code; a UPC-A number is a GTIN of 12 digits</td>
+        </tr>
+        <tr>
+          <th>UUID</th>
+          <td>Universally Unique Identifier</td>
+        </tr>
+        <tr>
+          <th>VDR</th>
+          <td>Vulnerability Disclosure Report</td>
+        </tr>
+        <tr>
+          <th>VEX</th>
+          <td>Vulnerability Exploitability eXchange</td>
+        </tr>
           </tbody>
-        </table>
-      </emu-table>
+      </table>
+    </emu-table>
   </emu-clause>
 </emu-clause>

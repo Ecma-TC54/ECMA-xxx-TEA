@@ -1,8 +1,6 @@
 <emu-clause id="sec-normative-references">
   <h1>Normative references</h1>
-  <p>
-    The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.
-  </p>
+  <p>The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
 
   <p>
     <dfn id="ecma-424" variants="CycloneDX,CDXA">ECMA-424</dfn>, <cite><emu-not-ref>CycloneDX</emu-not-ref> Bill of Materials Specification.</cite><br>

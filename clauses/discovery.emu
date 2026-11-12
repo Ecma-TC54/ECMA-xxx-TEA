@@ -1,5 +1,5 @@
 <emu-clause id="sec-tei">
-  <h1>Transparency Exchange Identifier (TEI)</h1>
+  <h1>Transparency Exchange Identifier <i>(TEI)</i></h1>
 
   <p>
     The TEI, Transparency Exchange Identifier, is a globally unique release
@@ -10,9 +10,9 @@
     In short, TEI is a unique product identifier with built-in support for discovery of
     one or more API servers for that product.
   </p>
-  <p>This section defines the TEI identifier and later describes how to use the TEI
-  for discovery.
-  </P>
+  <p>
+    This section defines the TEI identifier and later describes how to use the TEI for discovery.
+  </p>
 
   <emu-clause id="sec-tei-syntax">
     <h1>Syntax</h1>
@@ -36,10 +36,9 @@
         Any other characters that are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits.
         The unique identifier shall be formatted exactly as its registry entry defines it.
         <emu-note>
-          <p>
-            For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.
-          </p>
-        </emu-note></li>
+          <p>For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.</p>
+        </emu-note>
+      </li>
     </ul>
     <p>A client shall use a TEI exactly as received and shall not rewrite it.</p>
   </emu-clause>
@@ -50,8 +49,10 @@
     <p>TEI types are defined in the TEI type registry at <a href="https://github.com/CycloneDX/transparency-exchange-api/tree/main/tei-types">https://github.com/CycloneDX/transparency-exchange-api/tree/main/tei-types</a>.</p>
     <p>Registration refers to the TEA community process for adding a type, described in the registry.</p>
 
-    <p>The following table illustrates the types registered at the time of publication of this edition of the Standard;
-      the registry is the authoritative list.</p>
+    <p>
+      The following table illustrates the types registered at the time of publication of this edition of the Standard;
+      the registry is the authoritative list.
+    </p>
 
     <emu-table id="tei-types-table" informative>
       <emu-caption>
@@ -67,43 +68,43 @@
         </thead>
 
         <tbody>
-          <tr>
-            <td><code>purl</code></td>
-            <td>Package URL, Base64URL-encoded without padding</td>
-            <td><code>tei://cyclonedx.org/purl/cGtnOm1hdmVuL2NvbW1vbnMtaW8vY29tbW9ucy1pb0AyLjIyLjA</code></td>
-          </tr>
-          <tr>
-            <td><code>hash</code></td>
-            <td>Hash of an object, <code>&lt;hashtype&gt;:&lt;hex&gt;</code></td>
-            <td>
-              <code>tei://cyclonedx.org/hash/SHA-256:fd44efd601f651c8865acf0dfeacb0df19a2b50ec69ead0262096fd2f67197b9</code>
-            </td>
-          </tr>
-          <tr>
-            <td><code>uuid</code></td>
-            <td>UUID</td>
-            <td><code>tei://cyclonedx.org/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1</code></td>
-          </tr>
-          <tr>
-            <td><code>eanupc</code></td>
-            <td>EAN or UPC number</td>
-            <td><code>tei://example.com/eanupc/1234567890123</code></td>
-          </tr>
-          <tr>
-            <td><code>gtin</code></td>
-            <td>GTIN</td>
-            <td><code>tei://example.org/gtin/0234567890123</code></td>
-          </tr>
-          <tr>
-            <td><code>asin</code></td>
-            <td>Amazon Standard Identification Number</td>
-            <td><code>tei://example.com/asin/B07FZ8S74R</code></td>
-          </tr>
-          <tr>
-            <td><code>udi</code></td>
-            <td>Unique Device Identifier</td>
-            <td><code>tei://cyclonedx.org/udi/00123456789012</code></td>
-          </tr>
+        <tr>
+          <td><code>purl</code></td>
+          <td>Package URL, Base64URL-encoded without padding</td>
+          <td><code>tei://cyclonedx.org/purl/cGtnOm1hdmVuL2Nv<wbr>bW1vbnMtaW8vY29t<wbr>bW9ucy1pb0AyLjIy<wbr>LjA</code></td>
+        </tr>
+        <tr>
+          <td><code>hash</code></td>
+          <td>Hash of an object, <code>&lt;hashtype&gt;:&lt;hex&gt;</code></td>
+          <td>
+            <code>tei://cyclonedx.org/hash/SHA-256:fd44efd601f6<wbr>51c8865acf0dfeac<wbr>b0df19a2b50ec69e<wbr>ad0262096fd2f671<wbr>97b9</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>uuid</code></td>
+          <td>UUID</td>
+          <td><code>tei://cyclonedx.org/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1</code></td>
+        </tr>
+        <tr>
+          <td><code>eanupc</code></td>
+          <td>EAN or UPC number</td>
+          <td><code>tei://example.com/eanupc/1234567890123</code></td>
+        </tr>
+        <tr>
+          <td><code>gtin</code></td>
+          <td>GTIN</td>
+          <td><code>tei://example.org/gtin/0234567890123</code></td>
+        </tr>
+        <tr>
+          <td><code>asin</code></td>
+          <td>Amazon Standard Identification Number</td>
+          <td><code>tei://example.com/asin/B07FZ8S74R</code></td>
+        </tr>
+        <tr>
+          <td><code>udi</code></td>
+          <td>Unique Device Identifier</td>
+          <td><code>tei://cyclonedx.org/udi/00123456789012</code></td>
+        </tr>
         </tbody>
       </table>
     </emu-table>
@@ -135,7 +136,6 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       Two TEIs shall be considered equal if and only if they are the same
       sequence of characters.
     </p>
-
   </emu-clause>
 </emu-clause>
 
@@ -205,7 +205,8 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       ignored when comparing versions, both for precedence and for determining
       whether the client supports a version. If the highest mutually supported
       version is advertised with more than one build-metadata description, the
-      client may select any.</p>
+      client may select any.
+    </p>
 
     <p>
       If there is more than one valid endpoint option after versions have been
@@ -229,9 +230,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     <pre><code>https://&lt;url&gt;/v&lt;version&gt;/discovery?tei=&lt;tei&gt;</code></pre>
     <pre><code>https://&lt;url&gt;/v&lt;version&gt;/discovery?purl=&lt;purl&gt;</code></pre>
 
-    <p>
-      Where:
-    </p>
+    <p>Where:</p>
 
     <ul>
       <li><code>&lt;url&gt;</code> is the URL associated with the selected version in the discovery document,</li>
@@ -303,7 +302,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     </p>
 
     <emu-example id="example-discovery-document">
-        <pre><code class="json">{
+      <pre><code class="json">{
   "schemaVersion": 1,
   "endpoints": [
     {
@@ -326,9 +325,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 }</code></pre>
     </emu-example>
 
-    <p>
-      The <code>.well-known</code> endpoint shall only be available via HTTPS.
-    </p>
+    <p>The <code>.well-known</code> endpoint shall only be available via HTTPS.</p>
 
     <p>
       Discovery documents may be cached. When caching, implementations
@@ -378,13 +375,13 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
         coming before the auth clause.
       </p>
       <hr>
-      <p>The discovery endpoint is a part of the TEA OpenAPI specification. Unlike <code>/token</code>,
+      <p>
+        The discovery endpoint is a part of the TEA OpenAPI specification. Unlike <code>/token</code>,
         <code>/discovery</code> is required on a conforming TEA API base: a conforming server that exposes
-        a given API version shall implement it.</p>
+        a given API version shall implement it.
+      </p>
     </emu-note>
 
-    <p>
-      A TEA server shall provide a non-empty JSON array containing one or more <emu-xref href="#sec-tea-schema-discovery-info" title></emu-xref> objects in response to a valid request to the <code>/discovery</code> endpoint.
-    </p>
+    <p>A TEA server shall provide a non-empty JSON array containing one or more <emu-xref href="#sec-tea-schema-discovery-info" title></emu-xref> objects in response to a valid request to the <code>/discovery</code> endpoint.</p>
   </emu-clause>
 </emu-clause>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-GB-oxendict">
 <head>
-  <title>TEA - Transparency Exchange API</title>
-  <meta charset="utf-8">
-  <link rel="icon" href="img/favicon.ico">
+<title>TEA - Transparency Exchange API</title>
+<meta charset="utf-8">
+<link rel="icon" href="img/favicon.ico">
 
-  <style media="print">
+<style media="print">
     /*
     @page {
       @prince-overlay {
@@ -18,9 +18,26 @@
       }
     }
     */
+
+    emu-example p:has(code) {
+      text-align: left;
+    }
+
+    emu-example pre {
+      break-before: avoid;
+    }
+
+    :is(#sec-tea-data-model) emu-example pre, #sec-tea-op-discover li code {
+      overflow-wrap: anywhere;
+      text-wrap: pretty;
+    }
+
+    #sec-tea-well-known-schema pre, :is(#sec-tea-schema-collection, #sec-tea-schema-component-release, #sec-tea-schema-component-release-with-collection) emu-example pre {
+      break-inside: auto;
+    }
   </style>
 
-  <style>
+<style>
     figure pre, figure code {
       margin-top: 0;
       margin-bottom: 0;
@@ -55,12 +72,14 @@
     <li>Issues: <a href="https://github.com/Ecma-TC54/ECMA-xxx-TEA/issues">All Issues</a>, <a href="https://github.com/Ecma-TC54/ECMA-xxx-TEA/issues/new">File a New Issue</a></li>
     <li>Pull Requests: <a href="https://github.com/Ecma-TC54/ECMA-xxx-TEA/pulls">All Pull Requests</a>, <a href="https://github.com/Ecma-TC54/ECMA-xxx-TEA/pulls/new">Create a New Pull Request</a></li>
     <li>Source repository (narrative and OpenAPI): <a href="https://github.com/CycloneDX/transparency-exchange-api">https://github.com/CycloneDX/transparency-exchange-api</a></li>
-    <li> Editors: <ul>
+    <li>Editors:
+      <ul>
         <li><a href="mailto:oej@edvina.net">Olle E Johansson</a></li>
         <li><a href="mailto:steve.springett@owasp.org">Steve Springett</a></li>
       </ul>
     </li>
-    <li> Contributors: <ul>
+    <li>Contributors:
+      <ul>
         <li><a href="mailto:anthony@aph10.com">Anthony Harrison</a></li>
         <li><a href="mailto:paul.horton@owasp.org">Paul Horton</a></li>
         <li><a href="mailto:pkarwasz-ecma@apache.org">Piotr P. Karwasz</a></li>
@@ -69,9 +88,10 @@
         <li><a href="mailto:Mehrnoush.vaseghi@gmail.com">Mehrnoush Vaseghipanah</a></li>
       </ul>
     </li>
-    <li> Community: <ul>
-      <li>Chat: <a href="https://cyclonedx.slack.com/archives/C04LR6R9T8E">Slack Channel</a></li>
-    </ul>
+    <li>Community:
+      <ul>
+        <li>Chat: <a href="https://cyclonedx.slack.com/archives/C04LR6R9T8E">Slack Channel</a></li>
+      </ul>
     </li>
   </ul>
   <p>Refer to the <emu-xref href="#sec-colophon" title></emu-xref> for more information on how this document is created.</p>
@@ -95,7 +115,7 @@
 
 <emu-import href="./clauses/API.emu"></emu-import>
 
-<emu-import href="./clauses/tea-well-known-schema.emu" ></emu-import>
+<emu-import href="./clauses/tea-well-known-schema.emu"></emu-import>
 
 <emu-import href="./clauses/bibliography.emu"></emu-import>
 

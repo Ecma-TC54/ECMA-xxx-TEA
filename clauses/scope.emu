@@ -8,9 +8,7 @@
     documents, and lifecycle events&mdash;between publishers and
     consumers.
   </p>
-  <p>
-    The Standard covers:
-  </p>
+  <p>The Standard covers:</p>
   <ul>
     <li>The Transparency Exchange Identifier (TEI) and its resolution.</li>
     <li>The <emu-xref href="#sec-tea-data-model">data model</emu-xref> used to describe products, components, releases, collections and artefacts.</li>

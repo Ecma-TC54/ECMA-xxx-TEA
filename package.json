@@ -17,7 +17,7 @@
     "pdf": "npm run build-for-pdf && prince-books --script ./node_modules/ecmarkup/js/print.js out/index.html -o out/ECMA-TEA.pdf",
     "local-dev-pdf": "npm run local-dev-spec && npm run prebuild-only && ecmarkup --verbose spec.html --printable --assets external --no-minify out/index.html && prince-books --script ./node_modules/ecmarkup/js/print.js out/index.html -o out/ECMA-TEA.pdf",
     "clean": "rm -rf out",
-    "format": "emu-format --write spec.html",
+     "format": "emu-format --write clauses/*.emu",
     "test": "exit 0",
     "watch": "npm run build-only -- --lint-spec --watch"
   },
