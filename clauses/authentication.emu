@@ -2,56 +2,60 @@
   <h1>Authentication</h1>
 
   <p>
-    This Standard does not require a TEA server to authenticate its users,
+    This Standard does not require a TEA server to authenticate TEA client requests,
     however TEA servers wishing to implement authentication shall conform to
     the entire Clause.
   </p>
 
   <ul>
-    <li>A TEA server that requires authentication shall implement the
-      <code>/token</code> endpoint (<code>POST /token</code>) described below</li>
-    <li>A TEA server that requires authentication shall support API key
+    <li>A TEA server which requires authentication shall implement the
+      */token* endpoint (<emu-xref href="#sec-tea-op-requesttoken">`POST /token`</emu-xref>).</li>
+    <li>A TEA server which requires authentication shall support API key
       credential exchange.</li>
     <li>A TEA server may support additional credential types on the same
       endpoint, such as federated identity from an external OpenID Connect or
       SAML provider, mutual TLS, or others.</li>
-    <li>A TEA server shall ensure that a client which holds an API key is able
-      to reach every endpoint for which it is authorized using exclusively the
+    <li>A TEA server shall ensure a client which holds an API key is able
+      to reach every endpoint for which the client is authorized using exclusively the
       baseline exchange.</li>
     <li>A TEA server shall accept an API key exclusively on the
-      <code>/token</code> endpoint.</li>
+      */token* endpoint.</li>
     <li>A TEA server shall exchange an API key provided to the
-      <code>/token</code> endpoint for an access token to be provided to all
+      */token* endpoint for an access token to be provided to all
       other TEA API endpoints.</li>
     <li>Regardless of the credential type with which a client initiates its
-      connection, the TEA server shall provide it with an HTTP bearer token
+      connection, the TEA server shall provide the client with an HTTP bearer token
       allowing for interoperability across TEA clients and servers.</li>
   </ul>
 
   <emu-note>
     <p>
       There is no IETF specification for API keys, and no registered HTTP
-      authentication scheme for them. The widespread <code>X-API-Key</code>
-      header is additionally at odds with RFC 6648, a Best Current Practice
-      that deprecates the <code>X-</code> prefix for new header fields. This
+      authentication scheme for them. The widespread _X-API-Key_
+      header is at odds with RFC 6648, a Best Current Practice
+      which deprecates the `X-` prefix for new header fields. This
       specification therefore carries the API key in the standard
-      <code>Authorization</code> header using the Basic scheme, which is
+      _Authorization_ header using the Basic scheme defined in RFC 7617, which is
       registered, specified, and supported directly by virtually every HTTP
-      client library.</p>
+      client library.
+    </p>
   </emu-note>
 
   <emu-clause id="sec-token-endpoint">
-    <h1><code>/token</code> endpoint</h1>
+    <h1>*/token* endpoint</h1>
 
     <p>
       A TEA server shall provide an authentication endpoint at
-      <emu-xref href="#sec-tea-op-requesttoken"><code>POST /token</code></emu-xref>,
+      <emu-xref href="#sec-tea-op-requesttoken">`POST /token`</emu-xref>,
       relative to the TEA API base URL. This endpoint shall be implemented as
       an OAuth 2.0 token endpoint as defined in RFC 6749 section 3.2. and
-      provide an authorized client with a bearer token in response.</p>
+      provide an authorized client with a bearer token in response.
+    </p>
 
-    <p>Credentials and bearer tokens are transmitted in the clear at the HTTP
-      layer, so a TEA server shall be reachable only over TLS.</p>
+    <p>
+      Credentials and bearer tokens are transmitted in the clear at the HTTP
+      layer, so a TEA server shall be reachable only over TLS.
+    </p>
   </emu-clause>
 
   <emu-clause id="sec-access-tokens">
@@ -63,51 +67,61 @@
     </p>
 
     <emu-example>
-    <pre><code class="http">GET /product/d4d9f54a-abcf-11ee-ac79-1a52914d44b1 HTTP/1.1
+      <pre><code class="http">GET /product/d4d9f54a-abcf-11ee-ac79-1a52914d44b1 HTTP/1.1
 Host: tea.example.com
 Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
 </code></pre>
     </emu-example>
 
     <ul>
-      <li>A TEA server should return <code>expires_in</code>, so a client is able
+      <li>A TEA server should return _expires\_in_, so a client is able
         to avoid discovering expiry through a failed request.
       </li>
-      <li>If a request to a resource endpoint fails with <code>401</code> and the
-        <code>WWW-Authenticate</code> challenge header carries
-        <code>error=&quot;invalid_token&quot;</code>, the client may obtain a new
+      <li>If a request to a resource endpoint receives a response with a *401* status code, and the
+        _WWW-Authenticate_ challenge header carries the string
+        *error="invalid_token"*, the client may obtain a new
         token from the token endpoint and retry the request once, as described in
         RFC 6750 section 3.1.
       </li>
     </ul>
 
     <emu-example>
-    <pre><code class="http">  HTTP/1.1 401 Unauthorized
+      <pre><code class="http">HTTP/1.1 401 Unauthorized
   WWW-Authenticate: Bearer realm=&quot;tea&quot;, error=&quot;invalid_token&quot;, error_description=&quot;The access token expired&quot;
 </code></pre>
     </emu-example>
 
-    <p>This Standard defines no revocation endpoint, and clients need not
-      implement one.</p>
+    <p>
+      This Standard defines no revocation endpoint, and clients need not
+      implement one.
+    </p>
 
-    <p>Servers should not issue refresh tokens with the
-      <code>client_credentials</code> grant, following RFC 6749 section 4.4.3. A
+    <p>
+      Servers should not issue refresh tokens with the
+      _client\_credentials_ grant, following RFC 6749 section 4.4.3. A
       TEA client holds its own API key and may simply call the token endpoint
-      again.</p>
+      again.
+    </p>
   </emu-clause>
 
   <emu-clause id="sec-optional-credential">
     <h1>Optional credential types</h1>
 
-    <p>A server may accept credentials other than an API key at the
-      <code>/token</code> endpoint, selected by the <code>grant_type</code>
+    <p>
+      A server may accept credentials other than an API key at the
+      */token* endpoint, selected by the _grant\_type_
       parameter. The server shall provide the same token response regardless
-      of credential type.</p>
+      of credential type.
+    </p>
 
-    <p>Note that a server which delegates identity to an external provider
-      shall still issue TEA access tokens from its token endpoint. The external
-      provider authenticates the user; all TEA server endpoints maintain
-      consistent authenticated behaviour.</p>
+    <emu-note>
+      <p>
+        A server which delegates identity to an external provider
+        is still required to issue TEA access tokens from its token endpoint. The external
+        provider authenticates the user; all TEA server endpoints maintain
+        consistent authenticated behaviour.
+      </p>
+    </emu-note>
   </emu-clause>
 
   <emu-clause id="sec-client-flow">
@@ -115,76 +129,68 @@ Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
 
     <p>
       In TEA, resource operations may be called with a Bearer token or without
-      one; a <code>401</code> with a <code>WWW-Authenticate: Bearer</code>
+      one; a *401* HTTP response with a *WWW-Authenticate: Bearer*
       challenge on a given endpoint is the runtime signal that a token is
-      required.</p>
+      required.
+    </p>
 
     <p>The complete flow for a naive TEA client is as follows:</p>
 
-    <ol>
-      <li>The client sends a resource request with no credentials.</li>
-      <li>If the server does not require authentication for that endpoint, it
-        responds with the resource and the HTTP status code <code>200</code>.
-        (The client is done.)
-      </li>
-      <li>If the server requires authentication, it responds with HTTP status
-        code <code>401</code> and a <code>WWW-Authenticate</code> header naming
-        the <code>Bearer</code> scheme, as described in RFC 6750 section 3.
-      </li>
-      <li>The client requests <code>POST /token</code> with its valid
-        credential and receives an access token.
-      </li>
-      <li>The client repeats the initial resource request along with HTTP
-        header <code>Authorization: Bearer &lt;access_token&gt;</code>. The
-        client provides that same token on subsequent requests until it expires
-        or is rejected.
-      </li>
-      <li>If a later request fails with HTTP status code <code>401</code> and
-        <code>error=&quot;invalid_token&quot;</code> within the HTTP header,
-        the client obtains a fresh token and retries the request.
-      </li>
-    </ol>
+    <emu-alg>
+      1. [id="step-no-credential"] The client sends a resource request with no credentials.
+      1. If the server does not require authentication for the requested endpoint, it responds with the resource and the HTTP status code *200*. (The client is done).
+      1. [id="step-401-response"] If the server requires authentication, it responds with HTTP status code *401* and a _WWW-Authenticate_ header naming the _Bearer_ scheme, as described in RFC 6750 section 3.
+      1. The client requests <emu-xref href="#sec-tea-op-requesttoken">`POST /token`</emu-xref> with its valid credential and receives an access token.
+      1. The client repeats the initial resource request along with HTTP header `Authorization: Bearer &lt;access_token>`. The client provides the same token on subsequent requests until the token expires or is rejected.
+      1. If a later request receives a response with HTTP status code *401* and *error="invalid_token"* within the HTTP header, the client obtains a fresh token and retries the request.
+    </emu-alg>
 
     <p>
-      A client that already holds an API key for a service may skip steps 1 to
-      3 and call the token endpoint first: being issued a key is itself the
-      signal that the service requires authentication.</p>
+      A client which already holds an API key for a service may skip steps
+      <emu-xref href="#step-no-credential"></emu-xref> to
+      <emu-xref href="#step-401-response"></emu-xref> and call the token endpoint first: being issued a key is itself
+      the signal that some or all requests to the service require authentication.
+    </p>
 
     <p>
-      A client shall not probe <code>/token</code> to find out whether
+      A client shall not probe */token* to infer whether
       authentication exists; the challenge on the resource is the appropriate
-      discovery mechanism.</p>
+      discovery mechanism.
+    </p>
 
     <p>
       A client similarly shall not send its API key directly to a resource
-      endpoint; resource endpoints shall only accept bearer tokens.</p>
-</emu-clause>
+      endpoint; resource endpoints shall only accept bearer tokens.
+    </p>
+  </emu-clause>
 
   <emu-clause id="sec-partially-protected">
     <h1>Partially secured resources</h1>
 
     <p>
       A TEA server may make some data available without authenticating while
-      requiring authentication and authorization for other objects. Such a
-      server requires authentication for the protected objects:</p>
+      requiring authentication and authorization for other objects. When such a
+      server requires authentication for some protected objects:
+    </p>
 
     <ul>
       <li>the server shall implement the token endpoint and the baseline exchange;</li>
-      <li>endpoints which do not require authentication ignore request tokens;</li>
+      <li>endpoints which do not require authentication shall ignore request tokens;</li>
       <li>protected endpoints shall respond with HTTP status code
-        <code>401</code> and a <code>Bearer</code> challenge header if no valid
-        token is presented.</li>
+        *401* and a *Bearer* challenge header if no valid
+        token is presented;</li>
       <li>servers shall not respond with a concealing HTTP status code
-        <code>404</code> solely because the client is unauthenticated.</li>
+        *404* solely because the client is unauthenticated.</li>
     </ul>
   </emu-clause>
 
   <emu-clause id="sec-protected-resource">
     <h1>Protected resource metadata</h1>
 
-    <p>Servers which delegate identity to an external provider may publish
-      OAuth 2.0 protected resource metadata (RFC 9728) and reference it from
-      the <code>WWW-Authenticate</code> challenge, allowing a client to locate
+    <p>
+      Servers which delegate identity to an external provider may publish
+      OAuth 2.0 protected resource metadata (RFC 9728) and reference that metadata from
+      the *WWW-Authenticate* challenge, allowing a client to locate
       the authorization server automatically. This is optional; it does not
       replace the token endpoint, which remains the interoperable baseline,
       and it does not replace the challenge as a manner of discovering

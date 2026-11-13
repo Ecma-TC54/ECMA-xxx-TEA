@@ -1,45 +1,47 @@
 <emu-clause id="sec-tei">
-  <h1>Transparency Exchange Identifier (TEI)</h1>
+  <h1>Transparency Exchange Identifier <i>(TEI)</i></h1>
 
   <p>
     The TEI, Transparency Exchange Identifier, is a globally unique release
     identifier based on DNS coupled with new or existing identifiers like EAN
     codes, PURL and others. The TEI is used to find the artifacts needed for
     a given product through a discovery process to find the API server and
-    a standardised API to retrieve documents and information about a specific release.
+    a standardized API to retrieve documents and information about a specific release.
     In short, TEI is a unique product identifier with built-in support for discovery of
     one or more API servers for that product.
   </p>
-  <p>This section defines the TEI identifier and later describes how to use the TEI
-  for discovery.
-  </P>
+  <p>
+    This section defines the TEI identifier and later describes how to use the TEI for discovery.
+  </p>
 
   <emu-clause id="sec-tei-syntax">
     <h1>Syntax</h1>
 
     <p>A TEI is a URI as defined in RFC 3986, of the form:</p>
 
-    <pre><code class="text">tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code></pre>
+    <p>_tei_`://`_domain-name_`/`_type_`/`_unique-identifier_</p>
 
     <ul>
-      <li>The scheme shall be <code>tei</code> in lowercase.</li>
-      <li>The <code>domain-name</code> shall be a DNS name under the vendor's control and resolve to a web
+      <li>The scheme shall be _tei_ in lowercase.</li>
+      <li>The _domain-name_ shall be a DNS name under the vendor's control and resolve to a web
         server. The domain name shall not include a port number. The domain name shall be lowercase ASCII,
         using A-labels for internationalized names;</li>
-      <li>The <code>type</code> shall consist of lowercase ASCII letters and digits, and start with a letter.
-        The type names the identifier scheme of the <code>unique-identifier</code>
+      <li>The _type_ shall consist of lowercase ASCII letters and digits, and start with a letter.
+        The type names the identifier scheme of the _unique-identifier_
         and shall be registered as described in
         <emu-xref href="#sec-tei-types"></emu-xref>.</li>
-      <li>The <code>unique-identifier</code> shall be a single path segment in the syntax its <emu-xref href="#sec-tei-types">type</emu-xref> defines.
-        The <code>unique-identifier</code> shall identify one or more product releases within the <code>domain-name</code>.
-        It shall not contain <code>/</code>, either literally or percent-encoded as <code>%2F</code>.
-        Any other characters that are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits.
-        The unique identifier shall be formatted exactly as its registry entry defines it.
+      <li>The _unique-identifier_ shall be a single path segment in the syntax defined by the applicable <emu-xref href="#sec-tei-types">type</emu-xref>.
+        <ul>
+          <li>The _unique-identifier_ shall identify one or more product releases within the _domain-name_.</li>
+          <li>The _unique-identifier_ shall not contain `/`, either literally or percent-encoded as `%2F`.</li>
+          <li>Any other characters which are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits within the _unique-identifier_.</li>
+          <li>The _unique-identifier_ shall be formatted exactly as defined in the applicable registry entry.</li>
+        </ul>
+
         <emu-note>
-          <p>
-            For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.
-          </p>
-        </emu-note></li>
+          <p>For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.</p>
+        </emu-note>
+      </li>
     </ul>
     <p>A client shall use a TEI exactly as received and shall not rewrite it.</p>
   </emu-clause>
@@ -50,13 +52,12 @@
     <p>TEI types are defined in the TEI type registry at <a href="https://github.com/CycloneDX/transparency-exchange-api/tree/main/tei-types">https://github.com/CycloneDX/transparency-exchange-api/tree/main/tei-types</a>.</p>
     <p>Registration refers to the TEA community process for adding a type, described in the registry.</p>
 
-    <p>The following table illustrates the types registered at the time of publication of this edition of the Standard;
-      the registry is the authoritative list.</p>
+    <p>
+      The following table illustrates the types registered at the time of publication of this edition of the Standard;
+      the registry is the authoritative list.
+    </p>
 
-    <emu-table id="tei-types-table" informative>
-      <emu-caption>
-        <p>Registered TEI types</p>
-      </emu-caption>
+    <emu-table id="tei-types-table" informative caption="Registered TEI types">
       <table>
         <thead>
           <tr>
@@ -68,41 +69,41 @@
 
         <tbody>
           <tr>
-            <td><code>purl</code></td>
+            <td>*purl*</td>
             <td>Package URL, Base64URL-encoded without padding</td>
-            <td><code>tei://cyclonedx.org/purl/cGtnOm1hdmVuL2NvbW1vbnMtaW8vY29tbW9ucy1pb0AyLjIyLjA</code></td>
+            <td>`tei://cyclonedx.org/purl/cGtnOm1hdmVuL2NvbW1vbnMtaW8vY29tbW9ucy1pb0AyLjIyLjA`</td>
           </tr>
           <tr>
-            <td><code>hash</code></td>
-            <td>Hash of an object, <code>&lt;hashtype&gt;:&lt;hex&gt;</code></td>
+            <td>*hash*</td>
+            <td>Hash of an object, _&lt;hashtype>:&lt;hex>_</td>
             <td>
-              <code>tei://cyclonedx.org/hash/SHA-256:fd44efd601f651c8865acf0dfeacb0df19a2b50ec69ead0262096fd2f67197b9</code>
+              <code>tei://cyclonedx.org/hash/SHA-256:fd44efd601f651c8<wbr>865acf0dfeacb0df19a2b50ec69ead0262096fd2f67197b9</code>
             </td>
           </tr>
           <tr>
-            <td><code>uuid</code></td>
+            <td>*uuid*</td>
             <td>UUID</td>
-            <td><code>tei://cyclonedx.org/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1</code></td>
+            <td>`tei://cyclonedx.org/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1`</td>
           </tr>
           <tr>
-            <td><code>eanupc</code></td>
+            <td>*eanupc*</td>
             <td>EAN or UPC number</td>
-            <td><code>tei://example.com/eanupc/1234567890123</code></td>
+            <td>`tei://example.com/eanupc/1234567890123`</td>
           </tr>
           <tr>
-            <td><code>gtin</code></td>
+            <td>*gtin*</td>
             <td>GTIN</td>
-            <td><code>tei://example.org/gtin/0234567890123</code></td>
+            <td>`tei://example.org/gtin/0234567890123`</td>
           </tr>
           <tr>
-            <td><code>asin</code></td>
+            <td>*asin*</td>
             <td>Amazon Standard Identification Number</td>
-            <td><code>tei://example.com/asin/B07FZ8S74R</code></td>
+            <td>`tei://example.com/asin/B07FZ8S74R`</td>
           </tr>
           <tr>
-            <td><code>udi</code></td>
+            <td>*udi*</td>
             <td>Unique Device Identifier</td>
-            <td><code>tei://cyclonedx.org/udi/00123456789012</code></td>
+            <td>`tei://cyclonedx.org/udi/00123456789012`</td>
           </tr>
         </tbody>
       </table>
@@ -132,10 +133,8 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     </p>
 
     <p>
-      Two TEIs shall be considered equal if and only if they are the same
-      sequence of characters.
+      Two TEIs shall be considered equal if and only if each is an identical sequence of characters to the other.
     </p>
-
   </emu-clause>
 </emu-clause>
 
@@ -147,17 +146,16 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <p>
       A TEA client can initiate discovery of TEA servers
-      location by resolving the <code>&lt;domain-name&gt;</code> component
+      location by resolving the _domain-name_ component
       of a TEI to a DNS query and subsequent HTTP request. A client shall
       follow HTTP DNS resolution.
     </p>
 
     <emu-example>
       <p>
-        For a TEI matching<br />
-        <code>tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2</code>,
-        <br/>
-        a client would query DNS for <code>example.com</code>.
+        For a TEI matching <wbr>
+        `tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2`,<wbr>
+        a client would query DNS for *example.com*.
       </p>
     </emu-example>
 
@@ -165,23 +163,22 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       The TEA client shall connect to the host using HTTPS and verify the
       server certificate, including the server identity check as described
       in RFC 9525. The TEA client shall then request the URL composed of
-      the domain name with the path of <code>/.well-known/tea</code>
+      the domain name with the path of */.well-known/tea*
       appended.
     </p>
 
     <emu-example>
       <p>
-        For a TEI matching<br />
-        <code>tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2</code>,
-        <br/>
-        the initial request URL would be <code>https://example.com/.well-known/tea</code>
+        For a TEI matching <wbr>
+        `tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2`,<wbr>
+        the initial request URL would be *https://example.com/.well-known/tea*
       </p>
     </emu-example>
 
     <emu-note>
       <p>
         The webserver providing a discovery document as a response to
-        <code>/.well-known/tea</code> may or may not be the same server
+        */.well-known/tea* may or may not be the same server
         providing product release information. See the
         <emu-xref href="#example-discovery-document">example document</emu-xref>.
       </p>
@@ -205,18 +202,19 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       ignored when comparing versions, both for precedence and for determining
       whether the client supports a version. If the highest mutually supported
       version is advertised with more than one build-metadata description, the
-      client may select any.</p>
+      client may select any.
+    </p>
 
     <p>
       If there is more than one valid endpoint option after versions have been
       compared, the client shall choose the endpoint with the highest
-      <code>priority</code> value (a float between 0 and 1). If
-      <code>priority</code> is absent on a well-known endpoint object, the
-      client shall treat the value as <code>1</code>.
+      _priority_ value (a float between 0 and 1). If
+      _priority_ is absent on a well-known endpoint object, the
+      client shall treat the value as *1*.
     </p>
 
     <p>
-      If a client continues to have multiple valid endpoint options, it shall
+      If a client continues to have multiple valid endpoint options, the client shall
       treat the array order as priority, with the first entry placing highest.
     </p>
 
@@ -226,40 +224,38 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       options:
     </p>
 
-    <pre><code>https://&lt;url&gt;/v&lt;version&gt;/discovery?tei=&lt;tei&gt;</code></pre>
-    <pre><code>https://&lt;url&gt;/v&lt;version&gt;/discovery?purl=&lt;purl&gt;</code></pre>
+    <p>`https://`_url_`/v`_version_`/discovery?tei=`_tei_</p>
+    <p>`https://`_url_`/v`_version_`/discovery?purl=`_purl_</p>
 
-    <p>
-      Where:
-    </p>
+    <p>Where:</p>
 
     <ul>
-      <li><code>&lt;url&gt;</code> is the URL associated with the selected version in the discovery document,</li>
-      <li><code>&lt;version&gt;</code> is the exact version string as advertised, including any build metadata, and</li>
-      <li><code>&lt;tei&gt;</code> is the TEI, percent-encoded according to RFC 3986.</li>
-      <li><code>&lt;purl&gt;</code> is a conformant PURL, percent-encoded according to RFC 3986.</li>
+      <li>_url_ is the URL associated with the selected version in the discovery document,</li>
+      <li>_version_ is the exact version string as advertised, including any build metadata, and</li>
+      <li>_tei_ is the TEI, percent-encoded according to RFC 3986.</li>
+      <li>_purl_ is a conformant PURL, percent-encoded according to RFC 3986.</li>
     </ul>
 
     <p>
-      Exactly one of <code>tei</code> or <code>purl</code> shall be provided; a
-      request which includes neither <code>tei</code> nor <code>purl</code>, or
-      a request which includes both <code>tei</code> and <code>purl</code>, is
-      rejected with <code>400</code>.
+      Exactly one of _tei_ or _purl_ shall be provided; a
+      request which includes neither _tei_ nor _purl_, or
+      a request which includes both _tei_ and _purl_, is
+      rejected with *400*.
     </p>
 
     <emu-example>
-      <p>Using TEI <code>tei://products.example.com/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1</code></p>
-      <p>to construct the API endpoint <code>https://api.example.com/v1.0.0/discovery?tei=tei%3A//products.example.com/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1</code></p>
+      <p>Using TEI `tei://products.example.com/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1`</p>
+      <p>to construct the API endpoint `https://api.example.com/v1.0.0/discovery?tei=tei%3A//products.example.com/uuid/d4d9f54a-abcf-11ee-ac79-1a52914d44b1`</p>
     </emu-example>
 
     <emu-example>
-      <p>Using TEI <code>tei://products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ</code></p>
-      <p>to construct the API endpoint <code>https://api2.example.com/mytea/v1.0.0/discovery?tei=tei%3A//products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ</code></p>
+      <p>Using TEI `tei://products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ`</p>
+      <p>to construct the API endpoint `https://api2.example.com/mytea/v1.0.0/discovery?tei=tei%3A//products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ`</p>
     </emu-example>
 
     <emu-example>
-      <p>Using TEI <code>tei://products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ</code></p>
-      <p>to construct the API endpoint <code>https://products.example.com/v1.0.0/discovery?purl=pkg%3Amaven%2Forg.apache.logging.log4j%2Flog4j-core%402.24.3</code></p>
+      <p>Using TEI `tei://products.example.com/purl/cGtnOmRlYi9kZWJpYW4vY3VybEA3LjUwLjMtMT9hcmNoPWkzODYmZGlzdHJvPWplc3NpZQ`</p>
+      <p>to construct the API endpoint `https://products.example.com/v1.0.0/discovery?purl=pkg%3Amaven%2Forg.apache.logging.log4j%2Flog4j-core%402.24.3`</p>
     </emu-example>
   </emu-clause>
 
@@ -287,9 +283,9 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <p>
       Servers shall not locate the actual TEA service endpoint at the
-      <code>/.well-known/tea</code> URI. This URI is reserved for the TEA
+      */.well-known/tea* URI. This URI is reserved for the TEA
       discovery document and uses the well-known URI mechanism defined in
-      RFC 8615. A TEA discovery document is a JSON object that provides the
+      RFC 8615. A TEA discovery document is a JSON object which provides the
       available TEA server endpoints and supported versions.
     </p>
 
@@ -297,13 +293,13 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       The discovery document's JSON shall conform to the
       <emu-xref href="#sec-tea-well-known-schema" title></emu-xref>. A
       successful response shall be a JSON object containing an
-      <code>endpoints</code> array of one or more
-      <emu-xref href="#sec-tea-well-known-endpoint"><code>endpoint</code></emu-xref>
+      _endpoints_ array of one or more
+      <emu-xref href="#sec-tea-well-known-endpoint">_endpoint_</emu-xref>
       objects.
     </p>
 
     <emu-example id="example-discovery-document">
-        <pre><code class="json">{
+      <pre><code class="json">{
   "schemaVersion": 1,
   "endpoints": [
     {
@@ -326,9 +322,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 }</code></pre>
     </emu-example>
 
-    <p>
-      The <code>.well-known</code> endpoint shall only be available via HTTPS.
-    </p>
+    <p>The *.well-known* endpoint shall only be available via HTTPS.</p>
 
     <p>
       Discovery documents may be cached. When caching, implementations
@@ -349,21 +343,20 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <p>
       Advertised API versions in the discovery document shall fully conform to
-      SemVer 2.0.0 (<code>MAJOR.MINOR.PATCH</code>) with optional prerelease
+      SemVer 2.0.0 (*MAJOR.MINOR.PATCH*) with optional prerelease
       and build metadata.
     </p>
 
     <emu-note>
       <p>
-        While clients will request a discovery endpoint matching the exact
-        version string as published in a discovery document, they ignore build
-        metadata when comparing versions.
+        Build metadata within a version string is ignored when comparing versions, but clients will request a discovery
+        endpoint matching the exact version string as published in a discovery document, including such metadata.
       </p>
     </emu-note>
   </emu-clause>
 
   <emu-clause id="sec-discovery-info">
-    <h1><code>/discovery</code> response</h1>
+    <h1>*/discovery* response</h1>
 
     <emu-note type="editor">
       I do not believe there is any text in discovery.md about the server
@@ -378,13 +371,13 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
         coming before the auth clause.
       </p>
       <hr>
-      <p>The discovery endpoint is a part of the TEA OpenAPI specification. Unlike <code>/token</code>,
-        <code>/discovery</code> is required on a conforming TEA API base: a conforming server that exposes
-        a given API version shall implement it.</p>
+      <p>
+        The discovery endpoint is a part of the TEA OpenAPI specification. Unlike */token*,
+        */discovery* is required on a conforming TEA API base: a conforming server which exposes
+        a given API version shall implement */discovery*.
+      </p>
     </emu-note>
 
-    <p>
-      A TEA server shall provide a non-empty JSON array containing one or more <emu-xref href="#sec-tea-schema-discovery-info" title></emu-xref> objects in response to a valid request to the <code>/discovery</code> endpoint.
-    </p>
+    <p>A TEA server shall provide a non-empty JSON array containing one or more <emu-xref href="#sec-tea-schema-discovery-info" title></emu-xref> objects in response to a valid request to the */discovery* endpoint.</p>
   </emu-clause>
 </emu-clause>
