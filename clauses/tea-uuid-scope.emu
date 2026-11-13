@@ -3,18 +3,18 @@
 
   <p>A TEA UUID alone is <strong>not</strong> globally unique. Uniqueness for retrieval is the tuple:</p>
 
-  <pre><code class="text">API base + object type + UUID</code></pre>
+  <p>_API\_base_` + `_object\_type_` + `UUID</p>
 
   <ul>
-    <li>The <strong>API base</strong> is the base URL of the TEA API the client calls. For each object
+    <li>The _API\_base_ is the base URL of the TEA API the client calls. For each object
       type, a TEA server shall ensure that a UUID refers to at most one object served at
-      that API base.</li>
-    <li>The <strong>authoritative domain</strong> is supplied by the TEI
-      (<code>tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code>); see Clause <emu-xref href="#sec-tei"></emu-xref>.
-      It tells a client which API to call. It is not part of a UUID path. TEA has no
-      centralized authority that assigns UUIDs, so uniqueness across different API bases
-      is not enforced by the protocol.</li>
-    <li>The <strong>object type</strong> scopes uniqueness to a single object class (Product, Product
+      that _API\_base_.</li>
+  <li>The <strong>authoritative domain</strong> is supplied by the TEI
+    (_tei_`://`_domain-name_`/`_type_`/`_unique-identifier_); see Clause <emu-xref href="#sec-tei"></emu-xref>.
+    It tells a client which API to call. It is not part of a UUID path. TEA has no
+    centralized authority that assigns UUIDs, so uniqueness across different API bases
+    is not enforced by the protocol.</li>
+    <li>The _object\_type_ scopes uniqueness to a single object class (Product, Product
       Release, Component, Component Release, Collection, Artifact). Except as noted below,
       UUIDs need not be unique across object types.</li>
   </ul>
@@ -25,8 +25,10 @@
     not host both.
   </p>
 
+  <h2>Uniqueness across TEA hierarchies</h2>
+
   <p>
-    <strong>Exception: Product Release and Component Release.</strong> A TEA Collection shall use the same UUID as its parent
+    A TEA Collection shall use the same UUID as its parent
     Product Release or Component Release. Within an API base, a Product Release and a Component Release
     shall not share a UUID. Consequently, Collections belonging to different parent releases have different UUIDs.
     Versions of the same Collection retain the same UUID. Except for Product Release and Component Release, objects
@@ -63,8 +65,8 @@
     <p>
       Stability is required for
       <strong>all</strong> TEA object types, not only TEA Product Release. While TEI resolution targets only Product Release UUIDs, clients routinely bookmark and cache sub-resource URLs (e.g.
-      <code>/component/{uuid}</code>, <code>/componentRelease/{uuid}</code>,
-      <code>/productRelease/{uuid}</code>); changing those UUIDs would silently break those clients.
+      `/component/{uuid}`, `/componentRelease/{uuid}`,
+      `/productRelease/{uuid}`); changing those UUIDs would silently break those clients.
     </p>
   </emu-clause>
 </emu-clause>

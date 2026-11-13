@@ -35,6 +35,17 @@
     #sec-tea-well-known-schema pre, :is(#sec-tea-schema-collection, #sec-tea-schema-component-release, #sec-tea-schema-component-release-with-collection) emu-example pre {
       break-inside: auto;
     }
+
+    /* TODO: delete below rules after they are merged into ecmarkup */
+
+    :is(#terms-and-definitions, #sec-terms-and-definitions) p.acronym {
+      font-weight: bold;
+    }
+
+    :is(#terms-and-definitions, #sec-terms-and-definitions) emu-clause h1 + p,
+    :is(#terms-and-definitions, #sec-terms-and-definitions) emu-clause p.acronym + p {
+      margin: 0;
+    }
   </style>
 
 <style>

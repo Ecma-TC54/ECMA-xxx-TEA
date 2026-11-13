@@ -3,9 +3,9 @@
   <p>
     This Standard defines the Transparency Exchange API (TEA), a
     format-agnostic protocol for the exchange of software, hardware and
-    system transparency artefacts&mdash;including, but not limited to,
+    system transparency artefacts—including, but not limited to,
     Bills of Materials (xBOMs), attestations, vulnerability disclosure
-    documents, and lifecycle events&mdash;between publishers and
+    documents, and lifecycle events—between publishers and
     consumers.
   </p>
   <p>The Standard covers:</p>
