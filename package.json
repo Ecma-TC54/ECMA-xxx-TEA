@@ -29,7 +29,7 @@
     "@mermaid-js/mermaid-cli": "^11.17.0",
     "ecmarkup": "^25.0.3",
     "js-beautify": "^1.15.4",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.5.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "puppeteer": "^25.17.0"
