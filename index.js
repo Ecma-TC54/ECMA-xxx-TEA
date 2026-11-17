@@ -55,9 +55,9 @@ function breakLongTableCode(html) {
     .split("<wbr>")
     .map(piece => piece.length > 24 ? piece.match(RUN_CHUNK).join("<wbr>") : piece)
     .join("<wbr>");
-  return html.replace(/<emu-table\b[\s\S]*?<\/emu-table>/g, table =>
-    table.replace(/(<code>)([^<]*)(<\/code>)/g, (m, open, text, close) =>
-      open + text.replace(LONG_RUN, breakRun) + close));
+
+  return html.replace(/(<code>)([^<]*)(<\/code>)/g, (m, open, text, close) =>
+      open + text.replace(LONG_RUN, breakRun) + close);
 }
 
 /**

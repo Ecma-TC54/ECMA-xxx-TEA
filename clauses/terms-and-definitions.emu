@@ -1,5 +1,6 @@
 <emu-clause id="sec-terms">
   <h1>Terms and definitions</h1>
+
   <emu-clause id="sec-terms-and-definitions">
     <h1>Terms</h1>
     <p>For the purposes of this Standard, the following terms and definitions apply:</p>
@@ -11,13 +12,13 @@
 
     <emu-clause id="sec-terms-and-definitions-authn">
       <h1>Authentication</h1>
-      <p><strong><dfn id="authn">authn</dfn></strong></p>
+      <p class="acronym"><dfn id="authn">authn</dfn></p>
       <p>process of verifying the identity of a principal</p>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-authz">
       <h1>Authorization</h1>
-      <p><strong><dfn id="authz">authz</dfn></strong></p>
+      <p class="acronym"><dfn id="authz">authz</dfn></p>
       <p>process of determining what a verified principal is permitted to do</p>
     </emu-clause>
 
@@ -35,7 +36,7 @@
       <p>document describing the compliance, certification or regulatory status of a Component, for example a SOC 2 report</p>
 
       <emu-note>
-        <p>A compliance document is published as a TEA Artifact of a Component Release. The Component or Component Release is marked with the <code>COMPLIANCE_DOCUMENT</code> identifier type so that it can be discovered.</p>
+        <p>A compliance document is published as a TEA Artifact of a Component Release. The Component or Component Release is marked with the *COMPLIANCE_DOCUMENT* identifier type so that it can be discovered.</p>
       </emu-note>
     </emu-clause>
 
@@ -59,7 +60,7 @@
 
     <emu-clause id="sec-terms-and-definitions-discovery-document">
       <h1><dfn id="dfn-discovery-document" variants="Discovery document">discovery document</dfn></h1>
-      <p>JSON document served at <code>/.well-known/tea</code> on the host named by the domain name of a TEI, listing the TEA server endpoints for that domain and the API versions they support</p>
+      <p>JSON document served at */.well-known/tea* on the host named by the domain name of a TEI, listing the TEA server endpoints for that domain and the API versions they support</p>
     </emu-clause>
 
     <emu-clause id="sec-terms-and-definitions-ean-code">
@@ -83,7 +84,7 @@
 
     <emu-clause id="sec-terms-and-definitions-sbom">
       <h1>Software bill of materials</h1>
-      <p><strong>SBOM</strong></p>
+      <p class="acronym">SBOM</p>
       <p>structured inventory of the software components of a product, with their versions, identifiers and dependencies</p>
 
       <emu-note>
@@ -112,8 +113,8 @@
 
     <emu-clause id="sec-terms-and-definitions-tei">
       <h1>Transparency Exchange Identifier</h1>
-      <p><strong>TEI</strong></p>
-      <p>URI of the form <code>tei://&lt;domain-name&gt;/&lt;type&gt;/&lt;unique-identifier&gt;</code> that identifies one or more Product Releases</p>
+      <p class="acronym">TEI</p>
+      <p>URI of the form _tei_`://`_domain-name_`/`_type_`/`_unique-identifier_ that identifies one or more Product Releases</p>
 
       <emu-note>
         <p>The domain name of a TEI is used to locate the TEA server; see Clause <emu-xref href="#sec-tei"></emu-xref>.</p>
@@ -131,7 +132,7 @@
 
     <emu-clause id="sec-terms-and-definitions-vex">
       <h1>Vulnerability Exploitability eXchange document</h1>
-      <p><strong>VEX document</strong></p>
+      <p class="acronym">VEX document</p>
       <p>document stating, for a product, the exploitability status of known vulnerabilities</p>
 
       <emu-note>
@@ -144,63 +145,63 @@
     <h1>Acronyms and abbreviations</h1>
 
     <p>For the purposes of this Standard, the following abbreviations apply:</p>
-      <emu-table>
-        <emu-caption>Acronyms & abbreviations</emu-caption>
-        <table>
+    <emu-table>
+      <emu-caption>Acronyms & abbreviations</emu-caption>
+      <table>
         <thead>
           <tr><th>Abbreviation</th><th>&nbsp;</th></tr>
         </thead>
-          <tbody>
-            <tr>
-              <th>API</th>
-              <td>Application Programming Interface</td>
-            </tr>
-            <tr>
-              <th>CPE</th>
-              <td>Common Platform Enumeration, a naming scheme for IT products and platforms, usable as an identifier type</td>
-            </tr>
-            <tr>
-              <th>CSAF</th>
-              <td>Common Security Advisory Framework, an OASIS standard for machine-readable security advisories</td>
-            </tr>
-            <tr>
-              <th>EAN</th>
-              <td>International Article Number (formerly European Article Number); an EAN-13 or EAN-8 number is a GTIN of 13 or 8 digits</td>
-            </tr>
-            <tr>
-              <th>GTIN</th>
-              <td>Global Trade Item Number, the GS1 identification key for trade items, of 8, 12, 13 or 14 digits</td>
-            </tr>
-            <tr>
-              <th>SBOM</th>
-              <td>Software bill of materials</td>
-            </tr>
-            <tr>
-              <th>TEA</th>
-              <td>Transparency Exchange API</td>
-            </tr>
-            <tr>
-              <th>TEI</th>
-              <td>Transparency Exchange Identifier</td>
-            </tr>
-            <tr>
-              <th>UPC</th>
-              <td>Universal Product Code; a UPC-A number is a GTIN of 12 digits</td>
-            </tr>
-            <tr>
-              <th>UUID</th>
-              <td>Universally Unique Identifier</td>
-            </tr>
-            <tr>
-              <th>VDR</th>
-              <td>Vulnerability Disclosure Report</td>
-            </tr>
-            <tr>
-              <th>VEX</th>
-              <td>Vulnerability Exploitability eXchange</td>
-            </tr>
-          </tbody>
-        </table>
-      </emu-table>
+        <tbody>
+          <tr>
+            <th>API</th>
+            <td>Application Programming Interface</td>
+          </tr>
+          <tr>
+            <th>CPE</th>
+            <td>Common Platform Enumeration, a naming scheme for IT products and platforms, usable as an identifier type</td>
+          </tr>
+          <tr>
+            <th>CSAF</th>
+            <td>Common Security Advisory Framework, an OASIS standard for machine-readable security advisories</td>
+          </tr>
+          <tr>
+            <th>EAN</th>
+            <td>International Article Number (formerly European Article Number); an EAN-13 or EAN-8 number is a GTIN of 13 or 8 digits</td>
+          </tr>
+          <tr>
+            <th>GTIN</th>
+            <td>Global Trade Item Number, the GS1 identification key for trade items, of 8, 12, 13 or 14 digits</td>
+          </tr>
+          <tr>
+            <th>SBOM</th>
+            <td>Software bill of materials</td>
+          </tr>
+          <tr>
+            <th>TEA</th>
+            <td>Transparency Exchange API</td>
+          </tr>
+          <tr>
+            <th>TEI</th>
+            <td>Transparency Exchange Identifier</td>
+          </tr>
+          <tr>
+            <th>UPC</th>
+            <td>Universal Product Code; a UPC-A number is a GTIN of 12 digits</td>
+          </tr>
+          <tr>
+            <th>UUID</th>
+            <td>Universally Unique Identifier</td>
+          </tr>
+          <tr>
+            <th>VDR</th>
+            <td>Vulnerability Disclosure Report</td>
+          </tr>
+          <tr>
+            <th>VEX</th>
+            <td>Vulnerability Exploitability eXchange</td>
+          </tr>
+        </tbody>
+      </table>
+    </emu-table>
   </emu-clause>
 </emu-clause>

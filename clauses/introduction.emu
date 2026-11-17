@@ -1,19 +1,25 @@
 <emu-intro id="sec-intro">
   <h1>Introduction</h1>
 
-  <p>The TEA API is created to support automation of the software supply chain. Upstream
+  <p>
+    The TEA API is created to support automation of the software supply chain. Upstream
     vendors and open source projects can use this standard to keep downstream consumers
     up to date with transparency artefacts such as, but not limited to, bill of materials,
-    VEX files, attestations and much more.</p>
+    VEX files, attestations and much more.
+  </p>
 
-  <p>This specification defines a standard, format agnostic, API for the exchange of
-    product related artefacts, like BOMs, between systems.</p>
+  <p>
+    This specification defines a standard, format agnostic, API for the exchange of
+    product related artefacts, like BOMs, between systems.
+  </p>
 
   <p>The TEA Consumer API is a read-only interface for retrieving and validating transparency data.</p>
 
-  <p>A TEA client needs to support TEA discovery using the TEI identifier,
+  <p>
+    A TEA client needs to support TEA discovery using the TEI identifier,
     using DNS to find a set of TEA services. Discovery can be based on
-    existing product identifiers instead of creating new ones.</p>
+    existing product identifiers instead of creating new ones.
+  </p>
 
   <p>The API provides access to:</p>
 
@@ -26,6 +32,8 @@
     <li>Compliance-document identifiers and related metadata</li>
   </ul>
 
-  <p>The TEA Consumer API is broader than a simple product/component lookup API. It covers release history, collections, artefacts,
-    lifecycle data, discovery, and compliance-document-aware identifiers.</p>
+  <p>
+    The TEA Consumer API is broader than a simple product/component lookup API. It covers release history, collections, artefacts,
+    lifecycle data, discovery, and compliance-document-aware identifiers.
+  </p>
 </emu-intro>
