@@ -6,7 +6,7 @@
     identifier based on DNS coupled with new or existing identifiers like EAN
     codes, PURL and others. The TEI is used to find the artifacts needed for
     a given product through a discovery process to find the API server and
-    a standardised API to retrieve documents and information about a specific release.
+    a standardized API to retrieve documents and information about a specific release.
     In short, TEI is a unique product identifier with built-in support for discovery of
     one or more API servers for that product.
   </p>
@@ -30,11 +30,14 @@
         The type names the identifier scheme of the _unique-identifier_
         and shall be registered as described in
         <emu-xref href="#sec-tei-types"></emu-xref>.</li>
-      <li>The _unique-identifier_ shall be a single path segment in the syntax its <emu-xref href="#sec-tei-types">type</emu-xref> defines.
-        The _unique-identifier_ shall identify one or more product releases within the _domain-name_.
-        It shall not contain `/`, either literally or percent-encoded as `%2F`.
-        Any other characters that are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits.
-        The unique identifier shall be formatted exactly as its registry entry defines it.
+      <li>The _unique-identifier_ shall be a single path segment in the syntax defined by the applicable <emu-xref href="#sec-tei-types">type</emu-xref>.
+        <ul>
+          <li>The _unique-identifier_ shall identify one or more product releases within the _domain-name_.</li>
+          <li>The _unique-identifier_ shall not contain `/`, either literally or percent-encoded as `%2F`.</li>
+          <li>Any other characters which are not permitted in a URL path segment by RFC 3986 shall be percent-encoded with uppercase hexadecimal digits within the _unique-identifier_.</li>
+          <li>The _unique-identifier_ shall be formatted exactly as defined in the applicable registry entry.</li>
+        </ul>
+
         <emu-note>
           <p>For example, formatting for a UUID would constrain it to all lowercase, a hash would be constrained to hexadecimal characters, and a PURL would be represented as unpadded Base64URL.</p>
         </emu-note>
@@ -130,8 +133,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     </p>
 
     <p>
-      Two TEIs shall be considered equal if and only if they are the same
-      sequence of characters.
+      Two TEIs shall be considered equal if and only if each is an identical sequence of characters to the other.
     </p>
   </emu-clause>
 </emu-clause>
@@ -151,7 +153,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <emu-example>
       <p>
-        For a TEI matching<wbr>
+        For a TEI matching <wbr>
         `tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2`,<wbr>
         a client would query DNS for *example.com*.
       </p>
@@ -167,7 +169,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <emu-example>
       <p>
-        For a TEI matching<wbr>
+        For a TEI matching <wbr>
         `tei://example.com/uuid/62F2CF92-AE88-11F1-A698-1A52914D44B2`,<wbr>
         the initial request URL would be *https://example.com/.well-known/tea*
       </p>
@@ -212,7 +214,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
     </p>
 
     <p>
-      If a client continues to have multiple valid endpoint options, it shall
+      If a client continues to have multiple valid endpoint options, the client shall
       treat the array order as priority, with the first entry placing highest.
     </p>
 
@@ -283,7 +285,7 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       Servers shall not locate the actual TEA service endpoint at the
       */.well-known/tea* URI. This URI is reserved for the TEA
       discovery document and uses the well-known URI mechanism defined in
-      RFC 8615. A TEA discovery document is a JSON object that provides the
+      RFC 8615. A TEA discovery document is a JSON object which provides the
       available TEA server endpoints and supported versions.
     </p>
 
@@ -347,9 +349,8 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
 
     <emu-note>
       <p>
-        While clients will request a discovery endpoint matching the exact
-        version string as published in a discovery document, they ignore build
-        metadata when comparing versions.
+        Build metadata within a version string is ignored when comparing versions, but clients will request a discovery
+        endpoint matching the exact version string as published in a discovery document, including such metadata.
       </p>
     </emu-note>
   </emu-clause>
@@ -372,8 +373,8 @@ tei://example.com/purl/cGtnOnB5cGkvY3ljbG9uZWR4LXB5dGhvbi1saWI=
       <hr>
       <p>
         The discovery endpoint is a part of the TEA OpenAPI specification. Unlike */token*,
-        */discovery* is required on a conforming TEA API base: a conforming server that exposes
-        a given API version shall implement it.
+        */discovery* is required on a conforming TEA API base: a conforming server which exposes
+        a given API version shall implement */discovery*.
       </p>
     </emu-note>
 
